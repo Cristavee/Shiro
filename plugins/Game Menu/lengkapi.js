@@ -1,0 +1,59 @@
+import axios from 'axios'
+import { addReplyGame, replyGames } from '../../lib/game.js'
+import { decodeJid } from '../../lib/helpers.js'
+
+export default {
+  command: ['lengkapikalimat', 'lkm'],
+  tag: 'game',
+  description: 'Mainkan Lengkapi Kalimat, jawab pertanyaannya!',
+  public: true,
+  coin: 0,
+  cooldown: 3000,
+
+  async run(criv, { m, sender, system }) {
+    if (Object.values(replyGames).find(g => decodeJid(g.sender) === decodeJid(sender))) {
+      return m.reply('Kamu masih punya game yang belum selesai.\nKetik *.skip* untuk menyerah.')
+    }
+
+    try {
+      const { data } = await axios.get('https://api.siputzx.my.id/api/games/lengkapikalimat')
+      const pertanyaan = data?.data?.pertanyaan
+      const jawaban = data?.data?.jawaban?.toString().trim().toUpperCase()
+
+      if (!pertanyaan || !jawaban) return m.reply('Soal tidak lengkap dari API. Coba lagi nanti.')
+
+      const rewardCoin = 25
+      const timeout = 30000
+      const caption = `📝 *Lengkapi Kalimat*\n\nPertanyaan: ${pertanyaan}\nWaktu: ${timeout / 1000} detik\nHadiah: ${rewardCoin} coin\n\nBalas pesan ini untuk menjawab.\nGunakan *.skip* untuk menyerah.`
+      const sent = await criv.sendMessage(m.chat, { text: caption }, { quoted: m })
+      const gameId = sent.key.id
+
+      addReplyGame(gameId, {
+        sender: decodeJid(sender),
+        chatId: m.chat,
+        answer: jawaban,
+        timeout,
+        onCorrect: async (msg2) => {
+          await system.giveReward(sender, rewardCoin)
+          await criv.sendMessage(msg2.chat, {
+            text: `✅ Benar!\nJawaban: ${jawaban}\nKamu mendapat ${rewardCoin} coin.`
+          }, { quoted: msg2 })
+        },
+        onWrong: async (msg2) => {
+          await criv.sendMessage(msg2.chat, {
+            text: '❌ Salah. Coba lagi sebelum waktu habis.'
+          }, { quoted: msg2 })
+        },
+        onTimeout: async () => {
+          await criv.sendMessage(m.chat, {
+            text: `⏰ Waktu habis!\nJawaban yang benar: ${jawaban}`
+          }, { quoted: m })
+        }
+      })
+
+    } catch (err) {
+      console.error(err)
+      m.reply('Gagal mengambil soal. Coba lagi nanti.')
+    }
+  }
+}

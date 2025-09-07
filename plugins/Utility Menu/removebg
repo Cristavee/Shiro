@@ -1,0 +1,63 @@
+import axios from 'axios';
+import FormData from 'form-data';
+import { fileTypeFromBuffer } from 'file-type';
+
+async function uploadToUguu(buffer, filename = 'image.png') {
+  const form = new FormData();
+  form.append('files[]', buffer, { filename });
+  const { data } = await axios.post('https://uguu.se/upload.php', form, {
+    headers: form.getHeaders(),
+    maxBodyLength: Infinity,
+  });
+  const url = data?.files?.[0]?.url;
+  if (!url) throw new Error('Gagal upload gambar');
+  return url;
+}
+
+async function pollMosyne(endpoint, imageUrl, user_id = 'user_test') {
+  const headers = {
+    accept: 'application/json',
+    'content-type': 'application/json',
+    origin: 'https://mosyne.ai',
+    referer: `https://mosyne.ai/ai/${endpoint}`,
+    'user-agent': 'Mozilla/5.0'
+  };
+  const { data } = await axios.post(`https://mosyne.ai/api/${endpoint}`, { image: imageUrl, user_id }, { headers });
+  if (!data.id) throw new Error('Gagal memulai proses');
+
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 2000));
+    const res = await axios.post('https://mosyne.ai/api/status', { id: data.id, type: endpoint, user_id }, { headers });
+    if (res.data.status === 'COMPLETED') return res.data.image;
+    if (res.data.status === 'FAILED') throw new Error('Gagal memproses gambar');
+  }
+  throw new Error('Timeout proses');
+}
+
+export default {
+  command: ['removebg', 'rbg'],
+  tag: 'utility',
+  description: 'Hapus background + HD otomatis',
+  coin: 30,
+  cooldown: 6000,
+
+  async run(criv, { m }) {
+    const quoted = m.quoted || m;
+    const mime = (quoted.msg || quoted)?.mimetype || '';
+    if (!/image/.test(mime)) return;
+
+    try {
+      const buffer = await quoted.download();
+      if (!buffer) return;
+
+      const fileInfo = await fileTypeFromBuffer(buffer);
+      const url = await uploadToUguu(buffer, `image.${fileInfo?.ext || 'png'}`);
+      const noBg = await pollMosyne('remove_background', url);
+      const hdImg = await pollMosyne('upscale', noBg);
+
+      await criv.sendImage(m.chat, hdImg, '✅ Background dihapus & sudah HD!', m);
+    } catch (err) {
+      await criv.reply(m, `❌ Gagal: ${err.message || 'Terjadi kesalahan'}`);
+    }
+  }
+};
