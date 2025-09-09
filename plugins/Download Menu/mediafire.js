@@ -1,36 +1,27 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['mediafire', 'mfire', 'mf'],
   tag: 'download',
-  description: 'Download file dari Mediafire',
-  public: true,
+public: true,
   premium: false,
   coin: 10,
   cooldown: 8000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) return m.reply('⚠️ Masukkan URL Mediafire!')
-
-    try {
+      try {
       const apiUrl = `https://apis.davidcyriltech.my.id/mediafire?url=${encodeURIComponent(text)}`
       const { data } = await axios.get(apiUrl)
-
-      if (!data?.downloadLink) {
+        if (!data?.downloadLink) {
         return m.reply('Gagal mengambil data file dari Mediafire.')
       }
-
-      const { fileName, mimeType, size, downloadLink } = data
-
-      const caption = `📂 *Mediafire Downloader*\n\n`
+        const { fileName, mimeType, size, downloadLink } = data
+        const caption = `📂 *Mediafire Downloader*\n\n`
         + `> Nama: ${fileName}\n`
         + `> Ukuran: ${size}\n`
         + `> Tipe: ${mimeType}\n\n`
         + `Sedang mengirim file...`
-
-      await m.reply(caption)
-
-      await criv.sendFile(
+        await m.reply(caption)
+        await criv.sendFile(
         m.chat,
         downloadLink,
         fileName,

@@ -1,32 +1,25 @@
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
-
-export default {
+  export default {
   command: ['menu'],
   tag: 'main',
-  description: 'Menampilkan daftar perintah',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: false,
   public: true,
   coin: 3,
   premium: false,
-
-  async run(criv, { m, args, pushName, readMore }) {
+    async run(criv, { m, args, pushName, readMore }) {
     const plugins = criv.plugins || {}
     const categorized = {}
-
-    for (const plug of Object.values(plugins)) {
+      for (const plug of Object.values(plugins)) {
       if (!plug.tag) continue
-
-      const tag = plug.tag.toUpperCase()
+        const tag = plug.tag.toUpperCase()
       if (!categorized[tag]) categorized[tag] = []
-
-      let commandToDisplay = Array.isArray(plug.command) ? plug.command[0] : plug.command
+        let commandToDisplay = Array.isArray(plug.command) ? plug.command[0] : plug.command
       if (!commandToDisplay) continue
-
-      if (plug.owner) {
+        if (plug.owner) {
         commandToDisplay += ' ⓞ'
       } else if (plug.premium) {
         commandToDisplay += ' ℗'
@@ -35,32 +28,26 @@ export default {
       } else {
         commandToDisplay += ' ⓕ'
       }
-
-      if (!categorized[tag].includes(commandToDisplay)) {
+        if (!categorized[tag].includes(commandToDisplay)) {
         categorized[tag].push(commandToDisplay)
       }
     }
-
-    const filterTag = args[0]?.toUpperCase()
+      const filterTag = args[0]?.toUpperCase()
     const tagsToShow = filterTag && categorized[filterTag]  
       ? { [filterTag]: categorized[filterTag] }  
       : categorized  
-
-    if (filterTag && !categorized[filterTag]) {
+      if (filterTag && !categorized[filterTag]) {
       const available = Object.keys(categorized).map(t => `- ${t}`).join('\n')
-      return m.reply(`[ ! ] Kategori *${filterTag}* tidak ditemukan.\n\nKategori yang tersedia:\n${available}`)
+      return m.reply(`[ ! ] Category *${filterTag}* Not Found.\n\nAvailable Category:\n${available}`)
     }
-
-    let menu = ` ${global.getGreet(pushName)}\n\n${readMore}\n`
-
-    for (const [tag, cmds] of Object.entries(tagsToShow)) {
+      let menu = ` ${global.getGreet(pushName)}\n\n${readMore}\n`
+      for (const [tag, cmds] of Object.entries(tagsToShow)) {
       menu += `\n> *${tag} MENU:*\n`
       for (const cmd of cmds) {
         menu += `> *${global.prefix[0]}${cmd}*\n`
       }
     }
-
-    try {
+      try {
       await criv.sendMessage(m.chat, {
   text: menu,
   contextInfo: {
@@ -87,17 +74,6 @@ export default {
     }
   }
 })
-/* criv.sendMessage(m.chat,{
-         text: '\n                       *NAVIGASI LAINNYA*\n',
-         interactiveButtons: [
-     {
-        name: "quick_reply",
-        buttonParamsJson: JSON.stringify({
-             display_text: "Like ♥️",
-             id: ".like376382"
-        })
-     }]
-      }) */
     } catch (error) {
       console.error('❌ Error mengirim menu:', error)
       m.reply('Terjadi kesalahan saat mengirim menu.', error)

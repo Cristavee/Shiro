@@ -1,12 +1,9 @@
 import { stopUserGame } from '../../lib/game.js'
-
-export default {
+  export default {
   command: ['skip', 'stop'],
   tag: '',
-  description: 'Membatalkan game yang sedang aktif.',
-  public: true,
-
-  async run(criv, { m, sender }) {
+public: true,
+    async run(criv, { m, sender }) {
     const success = stopUserGame(sender)
     if (success) {
       await m.reply('Game kamu telah dihentikan.')

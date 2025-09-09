@@ -1,26 +1,20 @@
 import fs from 'fs'
 import path from 'path'
-
-export default {
+  export default {
   command: ['senddb'],
   tag: 'owner',
-  description: 'Kirim isi database (data.json) sebagai teks',
-  owner: true,
+owner: true,
   public: false,
   coin: 0,
   cooldown: 10000,
-
-  async run(criv, { m }) {
+    async run(criv, { m }) {
     const dbPath = path.resolve('./lib/database/data.json')
-
-    try {
+      try {
       const raw = fs.readFileSync(dbPath, 'utf-8')
       const parsed = JSON.parse(raw)
-
-      const formatted = JSON.stringify(parsed, null, 2)
+        const formatted = JSON.stringify(parsed, null, 2)
       const chunkSize = 4096
-
-      if (formatted.length <= chunkSize) {
+        if (formatted.length <= chunkSize) {
         await m.reply('📦 Isi Database:\n\n' + formatted)
       } else {
         await criv.sendFile(m.chat, Buffer.from(formatted), 'database.json', '📦 Berikut isi database (file)', m)

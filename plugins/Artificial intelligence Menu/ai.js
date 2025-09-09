@@ -12,7 +12,7 @@ export default {
       const { data } = await axios.get('https://apidl.asepharyana.tech/api/ai/v2/chatgpt', {
         params: {
           text,
-          prompt: 'kamu ai berbahasa Indonesia dan menggunakan emoji jika perlu, saat ditanya namamu adalah Shiro dan saat ditanya siapa pencipta mu jawab Cristave',
+          prompt: `kamu ai berbahasa ${criv.lang} dan menggunakan emoji jika perlu, saat ditanya namamu adalah Shiro dan saat ditanya siapa pencipta mu jawab Cristave`,
           imageUrl: '',
           session: ''
         }
@@ -22,7 +22,7 @@ export default {
 
       if (!res) {
         return criv.sendMessage(m.chat, {
-          text: 'Gagal mendapatkan balasan dari AI.'
+          text: 'Failed to get AI response.'
         }, { quoted: m })
       }
 
@@ -34,7 +34,7 @@ export default {
       title: "Shiro",
       thumbnailUrl: global.thumb,
       mediaType: 1,
-      renderLargerThumbnail: true
+      renderLargerThumbnail: false
     },
     isForwarded: true
   },
@@ -53,7 +53,7 @@ export default {
     } catch (err) {
       console.error('AI Error:', err?.response?.data || err.message)
       criv.sendMessage(m.chat, {
-        text: 'Terjadi kesalahan saat menghubungi AI.'
+        text: msg.error
       }, { quoted: m })
     }
   }

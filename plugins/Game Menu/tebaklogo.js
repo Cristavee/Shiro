@@ -1,35 +1,28 @@
 import axios from 'axios'
 import { addReplyGame, replyGames } from '../../lib/game.js'
 import { decodeJid } from '../../lib/helpers.js'
-
-export default {
+  export default {
   command: ['tebaklogo', 'tl'],
   tag: 'game',
-  description: 'Tebak logo dari gambar yang diberikan!',
-  public: true,
+public: true,
   coin: 0,
   cooldown: 3000,
-
-  async run(criv, { m, sender, system }) {
+    async run(criv, { m, sender, system }) {
     if (Object.values(replyGames).find(g => decodeJid(g.sender) === decodeJid(sender))) {
       return m.reply('Kamu masih punya game yang belum selesai.\nKetik *.skip* untuk menyerah.')
     }
-
-    try {
+      try {
       const { data } = await axios.get('https://api.siputzx.my.id/api/games/tebaklogo')
       const logoData = data?.data?.data
       const imageUrl = logoData?.image
       const jawaban = logoData?.jawaban?.toString().trim().toUpperCase()
-
-      if (!imageUrl || !jawaban) return m.reply('Soal tidak lengkap dari API. Coba lagi nanti.')
-
-      const rewardCoin = 40
+        if (!imageUrl || !jawaban) return m.reply('Soal tidak lengkap dari API. Coba lagi nanti.')
+        const rewardCoin = 40
       const timeout = 30000
       const caption = `🖼️ *Tebak Logo*\n\nPerhatikan gambar di bawah dan jawab logo tersebut.\nWaktu: ${timeout / 1000} detik\nHadiah: ${rewardCoin} coin\n\nBalas pesan ini untuk menjawab.\nGunakan *.skip* untuk menyerah.`
       const sent = await criv.sendMessage(m.chat, { image: { url: imageUrl }, caption }, { quoted: m })
       const gameId = sent.key.id
-
-      addReplyGame(gameId, {
+        addReplyGame(gameId, {
         sender: decodeJid(sender),
         chatId: m.chat,
         answer: jawaban,
@@ -51,8 +44,7 @@ export default {
           }, { quoted: m })
         }
       })
-
-    } catch (err) {
+      } catch (err) {
       console.error(err)
       m.reply('Gagal mengambil soal. Coba lagi nanti.')
     }

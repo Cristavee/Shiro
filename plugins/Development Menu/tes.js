@@ -1,9 +1,7 @@
-import { generateWAMessageFromContent, proto } from '@fuxxy-star/baileys'
-
-export default {
+import { generateWAMessageFromContent, proto } from 'baileys-x'
+  export default {
   command: ['tes', 't'],
   tag: 'dev',
-  description: 'Tes fitur pesan',
   owner: true,
   admin: false,
   botAdmin: false,
@@ -11,8 +9,7 @@ export default {
   premium: false,
   coin: 5,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {  
+    async run(criv, { m, text }) {  
     switch (text) {
       case '1': {
         const cards = [
@@ -39,8 +36,7 @@ export default {
             ]
           }
         ]
-
-        await criv.sendMessage(m.chat, {
+          await criv.sendMessage(m.chat, {
           interactiveMessage: {
             header: { title: '🗂️ Judul Utama' },
             body: { text: '📢 Isi Utama Pesan\n📌 Subjudul Opsional' },
@@ -53,14 +49,12 @@ export default {
         })
       }
       break
-
-      case '2': {
+        case '2': {
         const ppUrl = await criv.profilePictureUrl(m.rawSender, 'image')
         await criv.sendImage(m.chat, ppUrl)
       }
       break
-
-      case '3': {
+        case '3': {
         let msg = generateWAMessageFromContent(m.chat, {
           viewOnceMessage: {
             message: {
@@ -96,12 +90,10 @@ export default {
             }
           }
         }, {})
-
-        await criv.relayMessage(msg.key.remoteJid, msg.message, { messageId: msg.key.id })
+          await criv.relayMessage(msg.key.remoteJid, msg.message, { messageId: msg.key.id })
       }
       break
-
-      default: {
+        default: {
         await m.reply('ID YANG TERSEDIA 1-15')
       }
     }

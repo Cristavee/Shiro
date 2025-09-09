@@ -1,3 +1,9 @@
+/*
+* by Cristave 
+* Indonesian
+* Since 2025
+*/
+
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
@@ -11,8 +17,6 @@ import './config.js'
 import { handleReplyGame } from './lib/game.js'
 import moment from 'moment-timezone'
 import db from './lib/db.js'
-
-
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -40,8 +44,7 @@ function getMediaType(message) {
   return Object.keys(message)[0] || null
 }
 
-
-function logCommand({ command = 'Unknown', sender, name = 'Tanpa Nama', chatName = 'Unknown', isGroup }) {
+function logCommand({ command = 'Unknown', sender, name = 'No Name', chatName = 'Unknown', isGroup }) {
   if (!command) return
   const phone = sender.split('@')[0]
   const now = moment().tz('Asia/Jakarta').format('DD MMMM YYYY • HH:mm:ss')
@@ -63,12 +66,11 @@ function logCommand({ command = 'Unknown', sender, name = 'Tanpa Nama', chatName
   console.log(line)
 }
 
-
 function logErrorToFile(error) {
   const timestamp = new Date().toISOString()
   const errorMessage = `[${timestamp}] ${error.stack || error.message}\n\n\n`
   fs.appendFileSync(ERROR_LOG_FILE, errorMessage, 'utf8')
-  console.error(chalk.red(`Error dicatat ke ${ERROR_LOG_FILE}`));
+  console.error(chalk.red(`Error recorded to ${ERROR_LOG_FILE}`));
 }
 
 function updateLastActivity(senderId) {
@@ -91,8 +93,6 @@ function isSpamming(senderId, command) {
   return spamData.count >= SPAM_THRESHOLD
 }
 
-
-
 if (!global.plugins) {
     global.plugins = {};
 }
@@ -113,19 +113,18 @@ async function loadPlugin(filePath) {
               console.log(chalk.hex('#B2F2BB')(`Plugin: ${path.basename(filePath)}  - `) + chalk.gray(`command: [ ${plugin.command.join(' - ')} ]`));
               return true;
           } else {
-              console.warn(`! Plugin '${path.basename(filePath)}' dilewati: Tidak ada properti 'command' atau bukan array.`);
+              console.warn(`! Plugin '${path.basename(filePath)}' skipped: 'command' property is not present or not an array.`);
               return false;
           }
       } catch (e) {
-          console.error(chalk.red(` Gagal memuat plugin '${path.basename(filePath)}':`), e);
+          console.error(chalk.red(` Failed to load plugin '${path.basename(filePath)}':`), e);
           logErrorToFile(e);
           return false;
       }
   }
 
-
 async function loadAllPlugins() {
-    console.log(chalk.yellow('Memuat ulang semua plugin...'));
+    console.log(chalk.yellow('Reloading all plugins...'));
     global.plugins = {};
     Object.keys(gamePlugins).forEach(key => delete gamePlugins[key]);
 
@@ -154,16 +153,14 @@ async function loadAllPlugins() {
             }
         }
         global.totalFeature = totalLoaded;
-        console.log(chalk.green(`Semua plugin selesai dimuat. Total fitur: ${totalLoaded}`));
+        console.log(chalk.green(`All plugins loaded. Total features: ${totalLoaded}`));
     } catch (dirError) {
-        console.error(chalk.red(`Gagal membaca direktori plugin '${pluginsDir}':`), dirError);
+        console.error(chalk.red(`Failed to read plugins directory '${pluginsDir}':`), dirError);
         logErrorToFile(dirError);
     }
 }
 
-
 loadAllPlugins();
-
 
 function checkAccess(plugin, { isGroup, isAdmin, isBotAdmin, isOwner, sender, system }) {
   const opts = {
@@ -176,7 +173,7 @@ function checkAccess(plugin, { isGroup, isAdmin, isBotAdmin, isOwner, sender, sy
     coin: plugin.coin || 0
   }
 
-  // ✅ Cek banned
+  // ✅ Check banned
   if (system.isUserBanned(sender)) return global.msg.banned
 
   // ✅ Owner only
@@ -204,14 +201,13 @@ function checkAccess(plugin, { isGroup, isAdmin, isBotAdmin, isOwner, sender, sy
   // ✅ Warn limit 
   if (system.getWarn(sender) >= 3) return global.msg.warn
 
-  // ✅ Semua lolos
+  // ✅ All passed
   return null
 }
 
-
 chokidar.watch(pluginsDir, { ignored: /(^|[\/\\])\../, persistent: true, ignoreInitial: true })
     .on('change', async p => {
-        console.log(chalk.magenta(`Plugin diubah: ${p}. Memuat ulang...`));
+        console.log(chalk.magenta(`Plugin changed: ${p}. Reloading...`));
         if (fs.statSync(p).isFile() && p.endsWith('.js')) {
             const absolutePath = path.resolve(p);
             let wasLoaded = false;
@@ -233,14 +229,14 @@ chokidar.watch(pluginsDir, { ignored: /(^|[\/\\])\../, persistent: true, ignoreI
             if (loaded) {
                 console.log(chalk.green('Reloaded:'), path.basename(absolutePath));
             } else {
-                console.warn(chalk.yellow(`⚠️ Tidak ada command di ${path.basename(absolutePath)} saat reload atau ada error.`));
+                console.warn(chalk.yellow(`⚠️ No command in ${path.basename(absolutePath)} during reload or there was an error.`));
             }
         } else {
             loadAllPlugins(); 
         }
     })
     .on('add', async p => {
-        console.log(chalk.magenta(`Plugin baru ditambahkan: ${p}. Memuat ulang...`));
+        console.log(chalk.magenta(`New plugin added: ${p}. Reloading...`));
         if (fs.statSync(p).isFile() && p.endsWith('.js')) {
             const absolutePath = path.resolve(p);
             const loaded = await loadPlugin(absolutePath);
@@ -252,7 +248,7 @@ chokidar.watch(pluginsDir, { ignored: /(^|[\/\\])\../, persistent: true, ignoreI
         }
     })
     .on('unlink', p => {
-        console.log(chalk.magenta(`Plugin dihapus: ${p}. Memuat ulang...`));
+        console.log(chalk.magenta(`Plugin deleted: ${p}. Reloading...`));
         if (fs.statSync(p).isFile() && p.endsWith('.js')) {
             const absolutePath = path.resolve(p);
             let wasLoaded = false;
@@ -261,7 +257,7 @@ chokidar.watch(pluginsDir, { ignored: /(^|[\/\\])\../, persistent: true, ignoreI
                 if (global.plugins[cmd]?.filePath && path.resolve(global.plugins[cmd].filePath) === absolutePath) {
                     wasLoaded = true;
                     delete global.plugins[cmd];
-                    console.log(chalk.red(`  -> Dihapus: ${cmd}`)); 
+                    console.log(chalk.red(`  -> Deleted: ${cmd}`)); 
                 }
             }
             
@@ -278,7 +274,7 @@ async function cleanupExpiredGames() {
   try {
     if (system.db.read) await system.db.read()
   } catch (err) {
-    console.error('Gagal membaca database:', err)
+    console.error('Failed to read database:', err)
     system.db.data = { games: {} }
   }
 
@@ -290,7 +286,7 @@ async function cleanupExpiredGames() {
   for (const gameId in system.db.data.games) {
     const game = system.db.data.games[gameId];
     if (game.active && game.endTime && now > game.endTime) {
-      console.log(`Membersihkan game kedaluwarsa: ${gameId}`);
+      console.log(`Cleaning up expired game: ${gameId}`);
       delete system.db.data.games[gameId];
       if (activeGameTimeouts[gameId]) {
         clearTimeout(activeGameTimeouts[gameId]);
@@ -304,7 +300,7 @@ async function cleanupExpiredGames() {
     try {
       await system.saveDb();
     } catch (err) {
-      console.error('Gagal menyimpan database:', err);
+      console.error('Failed to save database:', err);
     }
   }
 }
@@ -445,12 +441,12 @@ switch (mtype) {
   case 'buttonsResponseMessage': body = m.message.buttonsResponseMessage?.selectedButtonId || ''; break
   case 'templateButtonReplyMessage': body = m.message.templateButtonReplyMessage?.selectedId || ''; break
   case 'listResponseMessage': body = m.message.listResponseMessage?.singleSelectReply?.selectedRowId || ''; break
-  case 'stickerMessage': body = '[Stiker]'; break
+  case 'stickerMessage': body = '[Sticker]'; break
   case 'audioMessage': body = '[Audio]'; break
-  case 'documentMessage': body = '[Dokumen]'; break
-  case 'locationMessage': body = '[Lokasi]'; break
-  case 'contactMessage': body = '[Kontak]'; break
-  case 'reactionMessage': body = m.message.reactionMessage?.text || '[Reaksi]'; break
+  case 'documentMessage': body = '[Document]'; break
+  case 'locationMessage': body = '[Location]'; break
+  case 'contactMessage': body = '[Contact]'; break
+  case 'reactionMessage': body = m.message.reactionMessage?.text || '[Reaction]'; break
   default: break
 }
 
@@ -468,14 +464,14 @@ if (!body && m.quoted?.message) {
     case 'extendedTextMessage': body = m.quoted.message.extendedTextMessage?.text || ''; break
     case 'imageMessage': body = m.quoted.message.imageMessage?.caption || ''; break
     case 'videoMessage': body = m.quoted.message.videoMessage?.caption || ''; break
-    case 'stickerMessage': body = '[Stiker Dibalas]'; break
-    case 'audioMessage': body = '[Audio Dibalas]'; break
-    case 'documentMessage': body = '[Dokumen Dibalas]'; break
-    case 'locationMessage': body = '[Lokasi Dibalas]'; break
-    case 'contactMessage': body = '[Kontak Dibalas]'; break
-    case 'buttonsResponseMessage': body = m.quoted.message.buttonsResponseMessage?.selectedButtonId || '[Tombol Dibalas]'; break
-    case 'templateButtonReplyMessage': body = m.quoted.message.templateButtonReplyMessage?.selectedId || '[Template Button Dibalas]'; break
-    case 'listResponseMessage': body = m.quoted.message.listResponseMessage?.singleSelectReply?.selectedRowId || '[List Dibalas]'; break
+    case 'stickerMessage': body = '[Replied Sticker]'; break
+    case 'audioMessage': body = '[Replied Audio]'; break
+    case 'documentMessage': body = '[Replied Document]'; break
+    case 'locationMessage': body = '[Replied Location]'; break
+    case 'contactMessage': body = '[Replied Contact]'; break
+    case 'buttonsResponseMessage': body = m.quoted.message.buttonsResponseMessage?.selectedButtonId || '[Replied Button]'; break
+    case 'templateButtonReplyMessage': body = m.quoted.message.templateButtonReplyMessage?.selectedId || '[Replied Template Button]'; break
+    case 'listResponseMessage': body = m.quoted.message.listResponseMessage?.singleSelectReply?.selectedRowId || '[Replied List]'; break
     default: break
   }
 }
@@ -590,8 +586,8 @@ await system.addUser(rawJid, m.pushName)
       });
      m.reply = async (content, options = {}) => {
   if (!criv || !criv.sendMessage || !from) {
-    console.error(chalk.red(`[m.reply ERROR] criv, criv.sendMessage, atau from undefined. From: ${from}`));
-    logErrorToFile(new Error(`[m.reply ERROR] criv, criv.sendMessage, atau from undefined. From: ${from}`));
+    console.error(chalk.red(`[m.reply ERROR] criv, criv.sendMessage, or from is undefined. From: ${from}`));
+    logErrorToFile(new Error(`[m.reply ERROR] criv, criv.sendMessage, or from is undefined. From: ${from}`));
     return;
   }
 
@@ -612,7 +608,7 @@ await system.addUser(rawJid, m.pushName)
     }
   } catch (err) {
     if (err?.message?.includes("rate-overlimit")) {
-      console.log("⚠️ Rate limit terdeteksi, tunggu 3 detik lalu retry...");
+      console.log("⚠️ Rate limit detected, waiting 3 seconds then retrying...");
       await new Promise(res => setTimeout(res, 3000));
       return await m.reply(content, options); 
     }
@@ -651,7 +647,7 @@ await system.addUser(rawJid, m.pushName)
         ...extra
       })
 
-      // Pesan dari sender -> recipient
+      // Message from sender -> recipient
       if (fromJid === sess.sender) {
         const label = `*${sess.alias}:* ${msgText}`.trim()
         const mediaBuffer = m.isMedia
@@ -676,9 +672,9 @@ await system.addUser(rawJid, m.pushName)
         }
       }
 
-      // Pesan dari recipient -> sender
+      // Message from recipient -> sender
       else if (fromJid === sess.recipient) {
-        const label = `💬 *Balasan dari ${sess.recipient.split('@')[0]}:* ${msgText}`.trim()
+        const label = `💬 *Reply from ${sess.recipient.split('@')[0]}:* ${msgText}`.trim()
         const mediaBuffer = m.isMedia
           ? await (typeof m.download === 'function' ? m.download() : criv.downloadMediaMessage(m))
           : null
@@ -701,7 +697,7 @@ await system.addUser(rawJid, m.pushName)
         }
       }
     } catch (err) {
-      console.error('[MENFESS][ERROR] gagal meneruskan pesan', { sid, err })
+      console.error('[CONFESS][ERROR] failed to forward message', { sid, err })
     }
   }
 }   
@@ -838,10 +834,10 @@ if (failReason) {
                 await system.saveDb();
                 await criv.sendPresenceUpdate('paused', m.chat) 
             } catch (pluginError) {
-                console.error(chalk.red(`❌ Error saat menjalankan plugin '${command}' (direct media):`), pluginError);
+                console.error(chalk.red(`❌ Error running plugin '${command}' (direct media):`), pluginError);
                 logErrorToFile(pluginError);
                 if (criv.user && global.bot.owner) {
-                    await criv.sendMessage(global.bot.owner, {text :'Terjadi kesalahan saat menjalankan command ini. Silakan coba lagi nanti, Error: ' + pluginError} );
+                    await criv.sendMessage(global.bot.owner, {text :'An error occurred while running this command. Please try again later. Error: ' + pluginError} );
                 }
                 await system.saveDb();
             }
@@ -863,11 +859,11 @@ if (failReason) {
           await system.addExp(sender, 10)
           await system.saveDb()
         } catch (pluginError) {
-          console.error(chalk.red(`❌ Error saat menjalankan plugin '${command}':`), pluginError)
+          console.error(chalk.red(`❌ Error running plugin '${command}':`), pluginError)
           logErrorToFile(pluginError)
           if (criv.user && global.bot.owner) {
       
-            await criv.sendMessage(global.bot.owner, {text :'Terjadi kesalahan saat menjalankan command ini. Silakan coba lagi nanti, Error: ' + pluginError} )
+            await criv.sendMessage(global.bot.owner, {text :'An error occurred while running this command. Please try again later. Error: ' + pluginError} )
           }
           await system.saveDb()
        }
@@ -879,7 +875,7 @@ if (isOwner) {
   
   if (lowerBody.startsWith('>')) {
     const commandInput = body.slice(1).trim()
-    if (!commandInput) return m.reply('Masukkan kode untuk dievaluasi.')
+    if (!commandInput) return m.reply('Enter code to evaluate.')
 
     try {
       const wrappedCode = commandInput.includes('return')
@@ -894,7 +890,7 @@ if (isOwner) {
 
       await m.reply(evalResult)
     } catch (e) {m
-      console.error(chalk.red('Error di eval command:'), e)
+      console.error(chalk.red('Error in eval command:'), e)
       logErrorToFile(e)
       await m.reply('*Error:* \n' + (e.stack || e.toString()))
     }
@@ -903,16 +899,16 @@ if (isOwner) {
 
   if (lowerBody.startsWith('=>')) {
     const command = body.slice(2).trim()
-    if (!command) return m.reply('Masukkan perintah shell untuk dieksekusi.')
+    if (!command) return m.reply('Enter shell command to execute.')
 
     try {
       const { stdout, stderr } = await util.promisify(exec)(command)
       let response = ''
       if (stdout) response += '*STDOUT:*\n' + stdout + '\n'
       if (stderr) response += '*STDERR:*\n' + stderr + '\n'
-      await m.reply(response || 'Perintah dieksekusi tanpa output.')
+      await m.reply(response || 'Command executed without output.')
     } catch (e) {
-      console.error(chalk.red('Error di exec command:'), e)
+      console.error(chalk.red('Error in exec command:'), e)
       logErrorToFile(e)
       await m.reply('*Error:* \n' + (e.stack || e.toString()))
     }
@@ -921,30 +917,30 @@ if (isOwner) {
 
   if (lowerBody.startsWith('$')) {
     const command = body.slice(1).trim()
-    if (!command) return m.reply('Masukkan perintah shell untuk dieksekusi.')
+    if (!command) return m.reply('Enter shell command to execute.')
 
     try {
       const output = execSync(command, { encoding: 'utf8', stdio: 'pipe' })
       await m.reply('*Shell:*\n' + output)
     } catch (e) {
-      console.error(chalk.red('Error di shell command:'), e)
+      console.error(chalk.red('Error in shell command:'), e)
       logErrorToFile(e)
       const errorMsg = e.stdout?.toString() || e.stderr?.toString() || e.message
-      await m.reply('*Error Shell:* \n' + errorMsg)
+      await m.reply('*Shell Error:* \n' + errorMsg)
     }
     return
   }
 }
 
         
-  let chatName = m.pushName || 'Tanpa Nama'
+  let chatName = m.pushName || 'No Name'
 if (isGroup) {
   try {
     const metadata = await criv.groupMetadata(from)
-    chatName = metadata.subject || 'Grup Tanpa Nama'
+    chatName = metadata.subject || 'Unnamed Group'
     m.metadata = metadata
   } catch {
-    chatName = 'Grup Tidak Terbaca'
+    chatName = 'Unreadable Group'
   }
 }
        
@@ -957,10 +953,9 @@ logCommand({
 })
 
     } catch (handlerError) {
-      console.error(chalk.red('❌ Error di handler utama messages.upsert:'), handlerError)
+      console.error(chalk.red('❌ Error in main messages.upsert handler:'), handlerError)
     
       logErrorToFile(handlerError)
     }
   })
 }
-

@@ -1,10 +1,8 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['heroml', 'ml'],
   tag: 'search',
-  description: 'Cari informasi hero Mobile Legends',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: false,
   public: true,
@@ -12,16 +10,13 @@ export default {
   premium: false,
   coin: 10,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) return m.reply(msg.query)
-
-    try {
+      try {
       const res = await axios.get(`https://api.vreden.my.id/api/hero?query=${encodeURIComponent(text)}`)
       const data = res.data?.result
       if (!data) return m.reply('Hero tidak ditemukan.')
-
-      let msg = `> *Nama Hero:* ${text}\n`
+        let msg = `> *Nama Hero:* ${text}\n`
       msg += `> *Full Name:* ${data.story_info_list?.['Full name'] || '-'}\n`
       msg += `> *Alias:* ${data.story_info_list?.Alias || '-'}\n`
       msg += `> *Role:* ${data.role}\n`
@@ -35,13 +30,11 @@ export default {
       msg += `- Offense: ${data.gameplay_info?.offense}\n`
       msg += `- Control: ${data.gameplay_info?.control_effect}\n`
       msg += `- Difficulty: ${data.gameplay_info?.difficulty}\n`
-
-      criv.sendMessage(m.chat, {
+        criv.sendMessage(m.chat, {
         image: { url: data.hero_img },
         caption: msg
       }, { quoted: m })
-
-    } catch (e) {
+      } catch (e) {
       console.error(e)
       m.reply('Terjadi kesalahan saat mengambil data hero.')
     }

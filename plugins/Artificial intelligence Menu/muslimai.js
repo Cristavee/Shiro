@@ -1,10 +1,8 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['muslimai', 'aimuslim', 'aiislam', 'muslim'], 
-  tag: 'ai', 
-  description: 'Chat dengan ai muslim.', 
-  owner: false,
+  tag: 'ai',
+owner: false,
   admin: false, 
   botAdmin: false, 
   public: true, 
@@ -12,8 +10,7 @@ export default {
   premium: false,
   coin: 5,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) text = 'hai'
 try {
   const url = 'https://api.siputzx.my.id/api/ai/muslimai'

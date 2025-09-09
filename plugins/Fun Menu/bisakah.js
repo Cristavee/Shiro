@@ -1,8 +1,7 @@
 export default {
   command: ['bisakah'],
   tag: 'fun',
-  description: 'Menjawab pertanyaan dengan jawaban acak (iya/tidak).',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: false,
   public: true,
@@ -10,11 +9,9 @@ export default {
   premium: false,
   coin: 3,
   cooldown: 5000,
-
-  async run(criv, { m, text, command }) {
+    async run(criv, { m, text, command }) {
     if (!text) return m.reply(' Contoh: .bisakah saya jadi programmer?')
-
-    const jawaban = [
+      const jawaban = [
       'Iya',
       'Bisa',
       'Tentu saja bisa',
@@ -27,16 +24,13 @@ export default {
       'Tentu tidak bisa',
       'Sudah pasti tidak'
     ]
-
-    const hasil = criv.pickRandom
+      const hasil = criv.pickRandom
       ? criv.pickRandom(jawaban)
       : jawaban[Math.floor(Math.random() * jawaban.length)]
-
-    const hasilText = `
+      const hasilText = `
 *🌎 Pertanyaan:* ${command} ${text}
 *💬 Jawaban:* ${hasil}
     `.trim()
-
-    await m.reply(hasilText)
+      await m.reply(hasilText)
   }
 }

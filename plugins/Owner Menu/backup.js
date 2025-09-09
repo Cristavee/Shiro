@@ -2,12 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 import { fileURLToPath } from 'url'; 
-
-export default {
+  export default {
   command: ['backup', 'bak', 'bs'],
   tag: 'owner',
-  description: 'Membuat backup script bot dan mengirimkannya.',
-  owner: true,
+owner: true,
   admin: false,
   botAdmin: false,
   public: true,
@@ -15,12 +13,10 @@ export default {
   premium: false,
   coin: 5,
   cooldown: 5000,
-
-  async run(criv, { system, m, body, from, args, command, sender, pushName, text, greet, target, amount, user, helpers, mentioned, readMore, fakeQuote }) {
+    async run(criv, { system, m, body, from, args, command, sender, pushName, text, greet, target, amount, user, helpers, mentioned, readMore, fakeQuote }) {
     try {
       await m.reply('Sedang membuat backup script bot Anda. Mohon tunggu...');
-
-      const outputFileName = `backup_${new Date().getTime()}.zip`;
+        const outputFileName = `backup_${new Date().getTime()}.zip`;
         
       const __filename = fileURLToPath(import.meta.url); 
       const pluginDirPath = path.dirname(__filename);
@@ -31,13 +27,11 @@ export default {
       const archive = archiver('zip', {
         zlib: { level: 9 }
       });
-
-      output.on('close', async () => {
+        output.on('close', async () => {
         console.log(`Backup berhasil dibuat: ${archive.pointer()} total byte`);
         try {
           const fileBuffer = fs.readFileSync(outputPath); 
-
-          await criv.sendFile(from, fileBuffer, outputFileName, 'Backup.zip', m);
+            await criv.sendFile(from, fileBuffer, outputFileName, 'Backup.zip', m);
        
           fs.unlinkSync(outputPath);
           console.log(`File backup ${outputFileName} berhasil dihapus dari server.`);
@@ -46,22 +40,18 @@ export default {
           await m.reply(`❌ Gagal mengirim file backup: ${sendError.message}`);
         }
      })
-
-      archive.on('warning', (err) => {
+        archive.on('warning', (err) => {
         if (err.code === 'ENOENT') {
           console.warn('Archiver Warning:', err);
         } else {
           throw err;
         }
       });
-
-      archive.on('error', (err) => {
+        archive.on('error', (err) => {
         throw err;
       });
-
-      archive.pipe(output);
-
-      const filesAndFoldersToBackup = [
+        archive.pipe(output);
+        const filesAndFoldersToBackup = [
         'config.js',
         'handler.js',
         'index.js',
@@ -72,14 +62,11 @@ export default {
         'lib',
         'session',
       ];
-
-      for (const item of filesAndFoldersToBackup) {
+        for (const item of filesAndFoldersToBackup) {
         const fullPath = path.join(botRootPath, item);
         const nameInZip = item; 
-
-        console.log(`Attempting to archive: ${fullPath} (to be named '${nameInZip}' inside zip)`);
-
-        try {
+          console.log(`Attempting to archive: ${fullPath} (to be named '${nameInZip}' inside zip)`);
+          try {
           const stats = fs.statSync(fullPath);
           if (stats.isDirectory()) {
             archive.directory(fullPath, nameInZip);
@@ -91,13 +78,11 @@ export default {
           await m.reply(`⚠️ Warning: File or folder not found or inaccessible: ${item}. Backup will proceed without this item.`);
         }
       }
-
-      archive.finalize();
-
-    } catch (error) {
+        archive.finalize();
+      } catch (error) {
       console.error('Error during backup process:', error);
       await m.reply(`❌ An error occurred during backup: ${error.message}`);
     }
   }
 };
-
+  

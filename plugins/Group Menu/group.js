@@ -1,8 +1,7 @@
 export default {
   command: ['group', 'gc', 'gcinfo'],
   tag: 'group',
-  description: 'Menampilkan info grup',
-  public: true,
+public: true,
   group: true,
   
   async run(criv, { m, sender }) {

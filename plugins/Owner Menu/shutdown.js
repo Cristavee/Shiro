@@ -1,8 +1,7 @@
 export default {
   command: ['shutdown'],
   tag: 'owner',
-  description: 'Matikan bot',
-  owner: true,
+owner: true,
   
   async run(criv, { m }) {
     await m.reply('👋 Bot dimatikan.')

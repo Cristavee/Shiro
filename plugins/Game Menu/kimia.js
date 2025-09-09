@@ -2,40 +2,30 @@ import axios from 'axios'
 import { addReplyGame, replyGames, stopUserGame } from '../../lib/game.js'
 import system from '../../lib/system.js'
 import { decodeJid } from '../../lib/helpers.js'
-
-export default {
+  export default {
   command: ['tebakkimia', 'kimia'],
   tag: 'game',
-  description: 'Tebak unsur kimia berdasarkan soalnya!',
-  public: true,
+public: true,
   coin: 0,
   cooldown: 3000,
-
-  async run(criv, { m, sender, text }) {
+    async run(criv, { m, sender, text }) {
     const mode = text?.toLowerCase().trim()
-
-    if (mode === 'skip' || mode === 'stop') {
+      if (mode === 'skip' || mode === 'stop') {
       const success = stopUserGame(sender)
       return m.reply(success ? 'Game berhasil dihentikan.' : 'Tidak ada game yang sedang berlangsung.')
     }
-
-    if (Object.values(replyGames).find(g => decodeJid(g.sender) === decodeJid(sender))) {
+      if (Object.values(replyGames).find(g => decodeJid(g.sender) === decodeJid(sender))) {
       return m.reply('Kamu masih punya game yang belum selesai.\nKetik *.skip* untuk menyerah.')
     }
-
-      const { data } = await axios.get('https://api.siputzx.my.id/api/games/tebakkimia')
+        const { data } = await axios.get('https://api.siputzx.my.id/api/games/tebakkimia')
       const { unsur, lambang } = data?.data || {}
-
-      const jawaban = lambang.toString().trim().toUpperCase()
+        const jawaban = lambang.toString().trim().toUpperCase()
       const rewardCoin = 40
       const timeout = 30000
-
-      const caption = `🧪 *Tebak Lambang Kimia!*\n\n❓ *Soal:* ${unsur}\n🎁 Hadiah: ${rewardCoin} coin\n⏱️ Waktu: ${timeout / 1000} detik\n\n> Balas pesan ini untuk menjawab.\nKetik *.skip* untuk menyerah.`
-
-      const sent = await criv.sendMessage(m.chat, { text: caption }, { quoted: m })
+        const caption = `🧪 *Tebak Lambang Kimia!*\n\n❓ *Soal:* ${unsur}\n🎁 Hadiah: ${rewardCoin} coin\n⏱️ Waktu: ${timeout / 1000} detik\n\n> Balas pesan ini untuk menjawab.\nKetik *.skip* untuk menyerah.`
+        const sent = await criv.sendMessage(m.chat, { text: caption }, { quoted: m })
       const gameId = sent.key.id
-
-      addReplyGame(gameId, {
+        addReplyGame(gameId, {
         sender: decodeJid(sender),
         chatId: m.chat,
         answer: jawaban,

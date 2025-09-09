@@ -1,120 +1,137 @@
-
-🤖 Nama Bot Anda
+<h1 align="center">🤖 Shiro – WhatsApp Multifunction Bot</h1>
 <p align="center">
-<a href="#tentang">Tentang</a> •
-<a href="#fitur">Fitur Utama</a> •
-<a href="#instalasi">Instalasi</a> •
-<a href="#penggunaan">Penggunaan</a> •
-<a href="#izin-dan-kontribusi">Izin & Kontribusi</a> •
-<a href="#kontak">Kontak</a>
+  <i>A modern, powerful, and fun WhatsApp bot built with <b>Baileys</b> 🌍</i>
 </p>
-Selamat datang di repositori resmi untuk Nama Bot Anda! Ini adalah bot WhatsApp multifungsi yang dirancang untuk membantu Anda dengan berbagai tugas, mulai dari hiburan, manajemen grup, hingga fitur-fitur utilitas. Dibangun dengan fokus pada kinerja, keandalan, dan kemudahan penggunaan.
-✨ Tentang
-Nama Bot Anda adalah sebuah proyek bot WhatsApp open-source yang dikembangkan menggunakan Node.js dan pustaka Baileys. Tujuan utama bot ini adalah menyediakan solusi otomatisasi dan interaksi yang kuat di platform WhatsApp, melayani baik pengguna pribadi maupun kebutuhan komunitas dalam grup.
-Mengapa memilih Nama Bot Anda?
- * Modular & Fleksibel: Struktur plugin yang rapi memudahkan penambahan fitur baru.
- * Performa Optimal: Dirancang untuk berjalan efisien dengan konsumsi sumber daya yang minimal.
- * Fitur Kaya: Dilengkapi dengan berbagai fitur bawaan yang siap pakai.
- * Mudah Diatur: Konfigurasi sederhana untuk memulai bot Anda dalam hitungan menit.
-🚀 Fitur Utama
-Berikut adalah beberapa fitur menonjol yang ditawarkan oleh Nama Bot Anda:
- * Manajemen Grup: Atur anggota, kelola pesan, dan sediakan fitur admin yang efisien.
- * Fitur Hiburan: Nikmati berbagai game dan perintah interaktif untuk menghilangkan kebosanan.
- * Utilitas: Konversi media, pencarian informasi, dan alat bantu sehari-hari lainnya.
- * Sistem Peringkat/Ekonomi (opsional jika ada): Integrasi sistem koin atau poin untuk interaksi yang lebih menarik.
- * Dukungan FAQ: Sistem pertanyaan umum yang dapat diisi dan diakses dengan mudah.
- * Cooldown System: Mencegah spam perintah untuk menjaga stabilitas bot.
- * Role-Based Access Control (RBAC): Kontrol akses perintah berdasarkan peran (Owner, Admin, Bot Admin, Premium).
- * Hot Reload Plugin: Perubahan pada plugin dimuat secara otomatis tanpa perlu me-restart bot.
-(Sesuaikan atau tambahkan fitur-fitur spesifik lain yang dimiliki bot Anda)
-🛠️ Instalasi
-Ikuti langkah-langkah di bawah ini untuk mengatur dan menjalankan Nama Bot Anda di lingkungan Anda.
-Prasyarat
-Sebelum memulai, pastikan Anda telah menginstal yang berikut:
- * Node.js (Versi 18 atau lebih tinggi direkomendasikan)
- * Git
-Langkah-langkah Instalasi
- * Clone Repositori:
-   git clone https://github.com/NamaPenggunaAnda/NamaRepoAnda.git
-cd NamaRepoAnda
 
- * Instal Dependensi:
-   npm install
-# atau
-yarn install
+<p align="center">
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-20.x-green?style=for-the-the-badge&logo=node.js" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-the-badge" /></a>
+  <img src="https://img.shields.io/github/stars/Cristavee/Shiro?style=for-the-the-badge" />
+  <img src="https://img.shields.io/github/forks/Cristavee/Shiro?style=for-the-the-badge" />
+  <img src="https://visitor-badge.laobi.icu/badge?page_id=Cristavee.Shiro&style=for-the-the-badge" />
+</p>
 
- * Konfigurasi Bot:
-   * Buat file config.js di root proyek. Anda bisa menyalin dari config.example.js (jika ada) atau membuatnya dari awal.
-   * Sesuaikan nilai-nilai seperti prefix, owner, botName, dll. Contoh:
-     // config.js
-global.prefix = ['.', '#', '!']; // Prefix perintah bot
-global.owner = ['62812xxxxxx@s.whatsapp.net']; // Nomor owner bot
-global.bot = { name: 'Nama Bot Anda' };
-global.msg = {
-    owner: '🚫 Perintah ini hanya untuk Owner bot.',
-    admin: '🚫 Perintah ini hanya untuk Admin grup.',
-    botAdmin: '🚫 Bot bukan Admin, tidak bisa melakukan perintah ini.',
-    private: '🚫 Perintah ini hanya bisa digunakan di Private Chat.',
-    premium: '💎 Anda bukan pengguna premium.',
-    coin: '💰 Koin Anda tidak cukup.',
-    group: '👥 Perintah ini hanya untuk Grup.'
-    // Tambahkan pesan lain sesuai kebutuhan
-};
-// Tambahan konfigurasi lain sesuai kebutuhan bot Anda
+---
 
- * Jalankan Bot:
-   npm start
-# atau
-node .
+## ✨ Features
 
-   Setelah menjalankan perintah, Anda akan melihat QR Code di terminal. Pindai QR Code tersebut menggunakan aplikasi WhatsApp Anda (WhatsApp > Pengaturan > Perangkat Tertaut > Tautkan Perangkat).
-📖 Penggunaan
-Setelah bot berjalan, Anda dapat berinteraksi dengannya di WhatsApp.
- * Gunakan prefix yang telah Anda atur di config.js (misalnya, ., #, atau !) sebelum perintah.
- * Contoh perintah:
-   * .menu - Menampilkan daftar perintah yang tersedia.
-   * .ping - Menguji koneksi bot.
-   * .stiker - Membuat stiker dari gambar yang Anda kirim dengan caption perintah ini.
-   * .addsoal - (Jika ada fitur ini) Menambahkan pertanyaan ke sistem FAQ atau game.
-(Berikan beberapa contoh perintah yang relevan agar pengguna dapat langsung mencobanya.)
-🔒 Izin dan Kontribusi
-Proyek ini bersifat open-source dan didistribusikan di bawah Lisensi MIT. Anda bebas untuk menggunakan, memodifikasi, dan mendistribusikan ulang kode ini.
-Kontribusi sangat kami hargai! Jika Anda ingin berkontribusi, silakan:
- * Fork repositori ini.
- * Buat branch baru: git checkout -b fitur-baru-anda
- * Lakukan perubahan dan commit: git commit -m 'Tambahkan fitur baru'
- * Push ke branch Anda: git push origin fitur-baru-anda
- * Buat Pull Request.
-📞 Kontak
-Jika Anda memiliki pertanyaan, saran, atau ingin melaporkan bug, jangan ragu untuk membuka issue di repositori ini atau menghubungi saya melalui WhatsApp:
- * WhatsApp: +62812xxxxxxxx (Ganti dengan nomor WhatsApp Anda)
-Terima kasih telah menggunakan Nama Bot Anda!
-<p align="center">Dibuat dengan ❤️ oleh [Nama Anda/Alias Anda]</p>
+<details>
+<summary>🧩 General</summary>
 
------
+- 👤 User profile system (level, coin, bio, rank, tier)  
+- 💎 Premium & Owner-only commands  
+- 📊 JSON-based database system  
+- and more..
+</details>
 
-### Cara Menggunakan `README.md` ini:
+<details>
+<summary>🔎 Search & Downloader</summary>
 
-1.  **Ganti Placeholder:**
+- 🎵 YouTube Search & Downloader (mp3/mp4)  
+- 📖 Lyrics Finder (LRCLIB API)  
+- and more..
+</details>
 
-      * `Nama Bot Anda`: Ganti dengan nama bot Anda yang sebenarnya.
-      * `NamaPenggunaAnda/NamaRepoAnda`: Ganti dengan nama pengguna GitHub dan nama repositori Anda yang sebenarnya pada URL clone.
-      * `+62812xxxxxxxx`: Ganti dengan nomor WhatsApp Anda.
-      * `[Nama Anda/Alias Anda]`: Ganti dengan nama atau alias Anda di bagian `Dibuat dengan ❤️ oleh`.
+<details>
+<summary>🎮 Games</summary>
 
-2.  **Sesuaikan Fitur:**
+- 🎲 Quiz, Guess the Word  
+- ✊ Rock Paper Scissors  
+- 🏆 Leveling + Rewards  
+- and more..
+</details>
 
-      * Bagian **"Fitur Utama"** perlu Anda sesuaikan agar benar-benar mencerminkan fitur-fitur spesifik yang ada di bot Anda. Hapus yang tidak relevan atau tambahkan yang baru.
+<details>
+<summary>🛠️ Utilities</summary>
 
-3.  **Sesuaikan Contoh Konfigurasi dan Penggunaan:**
+- 🌍 Translate (multi-language)  
+- 📤 File Upload
+- 🔗 URL Shortener  
+- 💌 Anonymous Confession System  
+- and more..
+</details>
 
-      * Pastikan contoh `config.js` sesuai dengan struktur konfigurasi bot Anda.
-      * Berikan contoh perintah yang paling sering digunakan atau yang dapat dengan cepat menunjukkan kemampuan bot Anda.
+<details>
+<summary>🤖 AI Integration</summary>
 
-4.  **Opsi Tambahan:**
+- 🗣️ ChatGPT-like conversation (Indonesian optimized)  
+- 🎨 AI Image Editing (Cartoon, Ghibli style, custom prompts)  
+- 📷 AI Image Generator (OpenAI DALL-E)  
+- and more..
+</details>
 
-      * Anda bisa menambahkan *badge* (misalnya, status build, versi Node.js, lisensi) di bagian atas `README` untuk memberikan informasi lebih lanjut secara sekilas. Anda bisa mencari "GitHub badges" untuk cara membuatnya.
-      * Jika bot Anda memiliki *screenshot* atau *GIF* demo, Anda bisa menambahkannya di bagian "Tentang" atau "Penggunaan" untuk memberikan visualisasi.
+---
 
-`README.md` ini akan membantu pengguna baru memahami bot Anda dengan cepat dan memberikan kesan profesional pada repositori GitHub Anda.
+## 🚀 Getting Started
 
+### 1️⃣ Clone Repository
+```bash
+git clone https://github.com/Cristavee/Shiro
+cd Shiro
+```
+
+2️⃣ Install Dependencies
+```bash
+npm install
+```
+3️⃣ Start Bot
+```bash
+npm start
+```
+
+---
+
+### 📂 Folder Structure
+
+Shiro/
+├── index.js         # Entry point
+├── handler.js       # Main system
+├── lib/             # Helper functions
+├── plugins/         # Features
+│   ├── ai.js
+│   ├── games.js
+│   ├── search.js
+│   ├── downloader.js
+│   └── ...more
+└── package.json
+
+
+---
+
+🏆 Highlights
+
+⚡ Hot reload system 
+
+🔒 Auto sanitize user id & name
+
+🛠️ Modular plugin system
+
+📡 Stable with Baileys-x
+
+
+
+---
+
+🤝 Contributing
+
+Want to add new features? Feel free to fork and create PR 🎉
+Issues and suggestions are always welcome!
+
+
+---
+
+📜 License
+
+MIT License – free to use, modify, and distribute with attribution.
+
+
+---
+
+✨ Note
+
+Shiro is built for educational and fun purposes only.
+Spam, illegal, or harmful usage is not supported by the developer.
+
+---
+
+<h3 align="center">© Cristave 2025</h3>

@@ -1,8 +1,7 @@
 export default {
   command: ['ping', 'speed', 'p'],
   tag: 'information',
-  description: 'Cek kecepatan respon bot',
-  public: true,
+public: true,
   coin: 2,
   async run(criv, { m }) {
     const start = Date.now()

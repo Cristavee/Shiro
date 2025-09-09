@@ -5,14 +5,11 @@ export default {
   owner: true,
   admin: false,
   botAdmin: false,
-  description: 'Unmute grup agar bot merespons kembali.',
-  
-  async run(criv, { m, system }) {
+async run(criv, { m, system }) {
     if (!system.isMuted(m.chat)) {
       return m.reply('Grup ini sudah tidak dalam keadaan mute.')
     }
-
-    await system.unMute(m.chat)
+      await system.unMute(m.chat)
     m.reply('Grup ini telah di-*unmute*. Bot akan kembali merespons pesan di sini.')
   }
 }

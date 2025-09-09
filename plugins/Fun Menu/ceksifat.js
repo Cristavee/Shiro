@@ -1,15 +1,12 @@
 const rand = (arr) => arr[Math.floor(Math.random() * arr.length)]
 const persen = ['0%','0,4%','1%','2,9%','6%','12%','20%','27%','35%','41%','49%','54%','60%','66%','73%','78%','84%','92%','93%','94%','96%','98,3%','99,7%','99,9%']
-
-export default {
+  export default {
   command: ['ceksifat', 'sifat'],
   tag: 'fun',
   coin: 5,
-  description: 'Cek sifat berdasarkan nama',
-  run: async (criv, { m, text }) => {
+run: async (criv, { m, text }) => {
     if (!text) return m.reply('Masukan namamu!')
-
-    const sifat = `
+      const sifat = `
 ╭━━━°「 *Sifat ${text}* 」
 ┃ Nama        : ${text}
 ┃ Ahlak Baik  : ${rand(persen)}

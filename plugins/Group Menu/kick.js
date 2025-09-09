@@ -1,8 +1,7 @@
 export default {
   command: ['kick', 'tendang'],
   tag: 'group',
-  description: 'Mengeluarkan anggota dari grup.',
-  owner: false,
+owner: false,
   admin: true,
   botAdmin: true,
   group: true,
@@ -10,8 +9,7 @@ export default {
   premium: false,
   coin: 0,
   cooldown: 5000,
-
-  async run(criv, { m, mentioned, quoted }) {
+    async run(criv, { m, mentioned, quoted }) {
     let usersToKick = [];
     if (!mentioned) return m.reply('Siapa yang akan dikeluarkan?')
     if (mentioned) {
@@ -19,15 +17,12 @@ export default {
     } else if (quoted && quoted.sender) {
       usersToKick.push(quoted.sender);
     }
-
-    if (usersToKick.length === 0) {
+      if (usersToKick.length === 0) {
       return;
     }
-
-    let successCount = 0;
+      let successCount = 0;
     let failedList = [];
-
-    for (let userJid of usersToKick) {
+      for (let userJid of usersToKick) {
       if (userJid === m.sender) {
         failedList.push(`${userJid.split('@')[0]} (Tidak bisa mengeluarkan diri sendiri)`);
         continue;
@@ -36,23 +31,18 @@ export default {
         failedList.push(`${userJid.split('@')[0]} (Tidak bisa mengeluarkan bot)`);
         continue;
       }
-
-      try {
+        try {
         await criv.groupParticipantsUpdate(m.chat, [userJid], 'remove');
         successCount++;
       } catch (error) {
         failedList.push(`${userJid.split('@')[0]} (Error: ${error.message})`);
       }
     }
-
-    let result = `Berhasil mengeluarkan ${successCount} anggota.\n`;
+      let result = `Berhasil mengeluarkan ${successCount} anggota.\n`;
     if (failedList.length > 0) {
       result += `Gagal mengeluarkan ${failedList.length} anggota:\n- ${failedList.join('\n- ')}\n`;
     }
-
-    await m.reply(result);
+      await m.reply(result);
   }
 };
-
-
-
+  

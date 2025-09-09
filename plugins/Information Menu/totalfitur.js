@@ -1,8 +1,7 @@
 export default {
   command: ['totalfitur', 'total', 'fitur'], 
-  tag: 'information', 
-  description: '', 
-  owner: false,
+  tag: 'information',
+owner: false,
   admin: false, 
   botAdmin: false, 
   public: true, 
@@ -10,8 +9,7 @@ export default {
   premium: false,
   coin: 10,
   cooldown: 5000,
-
-  async run(criv, { system,  m,  body,  from,  args,  command,  sender,  pushName }) {
+    async run(criv, { system,  m,  body,  from,  args,  command,  sender,  pushName }) {
  await criv.sendMessage(m.chat, {
   ai: true,
   text: `*Total Fitur*\n> ${global.totalFeature}`,

@@ -1,8 +1,7 @@
 export default {
   command: ['leave', 'out'],
   tag: 'group',
-  description: 'Membuat bot keluar dari grup ini.',
-  owner: true,
+owner: true,
   admin: false,
   botAdmin: false, 
   public: false,
@@ -10,8 +9,7 @@ export default {
   premium: false,
   coin: 0,
   cooldown: 10000,
-
-  async run(criv, { m, from }) {
+    async run(criv, { m, from }) {
     try {
       await m.reply('Saya akan keluar dari grup ini. Sayonara!');
       await criv.groupLeave(m.chat); 

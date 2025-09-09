@@ -1,8 +1,7 @@
 export default {
   command: ['apakah'], 
-  tag: 'fun', 
-  description: 'Menjawab pertanyaan apakah',
-  owner: false,
+  tag: 'fun',
+owner: false,
   admin: false, 
   botAdmin: false, 
   public: true, 
@@ -10,11 +9,9 @@ export default {
   premium: false,
   coin: 3,
   cooldown: 5000,
-
-  async run(criv, { m, text, pushName }) {
+    async run(criv, { m, text, pushName }) {
     if (!text) return m.reply(msg.query)
-
-    const jawaban = [
+      const jawaban = [
       'Oh jelas.',
       'Mungkin ya.',
       'Pasti',
@@ -26,15 +23,12 @@ export default {
       'Tidak.',
       'Mustahil.'
     ]
-
-    const hasil = await criv.pickRandom(jawaban)
-
-    const hasilText = `
+      const hasil = await criv.pickRandom(jawaban)
+      const hasilText = `
 Pertanyaan: ${text}
 Penanya   : ${pushName}
 Jawaban   : ${hasil}
     `.trim()
-
-    await m.reply(hasilText)
+      await m.reply(hasilText)
   }
 }

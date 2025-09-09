@@ -1,10 +1,8 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['text2image', 'img', 'txt2img'],
   tag: 'ai',
-  description: 'Ubah teks menjadi gambar menggunakan AI.',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: false,
   public: true,
@@ -12,22 +10,17 @@ export default {
   premium: false,
   coin: 20,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) return m.reply(msg.query)
-
-    try {
+      try {
       const url = `https://api.vreden.my.id/api/artificial/text2image?prompt=${encodeURIComponent(text)}`
       const { data } = await axios.get(url)
-
-      if (!data?.result?.download || !data?.result?.status) {
+        if (!data?.result?.download || !data?.result?.status) {
         return m.reply('Gagal menghasilkan gambar.')
       }
-
-      const res = data.result
+        const res = data.result
       const info = `> Prompt: ${res.prompt}`
-
-      await criv.sendImage(m.chat, res.download, info, m)
+        await criv.sendImage(m.chat, res.download, info, m)
     } catch (err) {
       console.error(err)
       m.reply('Terjadi kesalahan saat menghubungi API Text2Image.')

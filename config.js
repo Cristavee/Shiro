@@ -2,67 +2,65 @@ import path from 'path'
 import fs from 'fs'
 import moment from 'moment-timezone'
 
-// ─── Pengaturan Bot ─────────────────────────────────
+// ─── Bot Settings ─────────────────────────────────
 global.usePairingCode = true // true = pairing code, false = QR
-global.cuspair = 'AAAAAAAA'
+global.cuspair = 'AAAAAAAA' // CUSTOM PAIRING CODE (MUST BE 8 DIGITS)
 global.bot = {
-  name: 'Shiro',
-  owner: '6285932203366',
-  ownerName: 'Cristave',
-  dummy: '12345678910@s.whatsapp.net',
-  full: 'Shirotaka'
+  name: '', // UR BOT NAME
+  owner: '', // UR NUMBER
+  ownerName: '', // UR NAME
+  full: '' // UR BOT FULL NAME / SEC NAME
 }
-global.thumb = 'https://pomf2.lain.la/f/10xr5ka8.png'
-global.responseToBot = false
+global.thumb = 'https://pomf2.lain.la/f/10xr5ka8.png' // THUMBNAIL URL
 
 // ─── Sticker ──────────────────────────────────
 
 global.pack = 'Shiro Sticker'
 global.author = 'WhatsApp Bot'
 
-// ─── Daftar Owner ──────────────────────────────────
+// ─── Owner List ──────────────────────────────────
 global.owner = [`${global.bot.owner}@s.whatsapp.net`]
 
-// ─── Prefix Perintah ───────────────────────────────
+// ─── Command Prefix ───────────────────────────────
 global.prefix = ['.', '!', '/', ',']
 
-// ─── Sosial Media ──────────────────────────────────
-global.ig = ''
-global.wa = ''
-global.git = ''
-global.yt = '' // isi jika ada
-global.fb = '' // isi jika ada
+// ─── Social Media ──────────────────────────────────
+global.ig = '' // fill if available
+global.wa = '' // fill if available
+global.git = '' // fill if available
+global.yt = '' // fill if available
+global.fb = '' // fill if available
 
-// ─── Respon Bot Default ────────────────────────────
+// ─── Default Bot Responses ────────────────────────────
 global.msg = {
-  owner: "Perintah ini hanya dapat digunakan oleh Owner.",
-  admin: "Perintah ini hanya dapat digunakan oleh Admin grup.",
-  botAdmin: "Bot perlu menjadi Admin untuk menjalankan perintah ini.",
-  group: "Perintah ini hanya dapat digunakan di dalam grup ini.",
-  private: "Perintah ini hanya dapat digunakan di chat pribadi.",
-  error: "Terjadi kesalahan saat menjalankan perintah. Silakan coba kembali.",
-  query: "Mohon masukkan teks atau parameter yang sesuai.",
-  reply: "Silakan balas pesan atau mention pengguna.",
-  success: "Perintah berhasil dijalankan.",
-  premium: "Fitur ini hanya tersedia untuk pengguna Premium.",
-  coin: "Saldo koin kamu tidak mencukupi untuk menjalankan perintah ini\nSilahkan .claim atau mainkan game",
-  media: "Masukan tipe media yang valid.",
-  main: "Fitur ini dalam proses perawatan atau pengembangan oleh owner"
+  owner: "This command can only be used by the Owner.",
+  admin: "This command can only be used by Group Admins.",
+  botAdmin: "The bot needs to be an Admin to run this command.",
+  group: "This command can only be used in this group.",
+  private: "This command can only be used in a private chat.",
+  error: "An error occurred while running the command. Please try again.",
+  query: "Please enter appropriate text or parameters.",
+  reply: "Please reply to a message or mention a user.",
+  success: "Command executed successfully.",
+  premium: "This feature is only available for Premium users.",
+  coin: "Your coin balance is insufficient to run this command.\nPlease .claim or play a game",
+  media: "Please enter a valid media type.",
+  main: "This feature is currently under maintenance or development by the owner"
 }
 
-// ─── API Key ───────────────────────────────────────
+// ─── API Key (For Future Project)───────────────────────
 
-// ─── Fungsi Sapaan Dinamis ─────────────────────────
+// ─── Dynamic Greeting Function ─────────────────────────
 function getGreeting() {
   const hour = moment().tz('Asia/Jakarta').hour()
-  if (hour >= 4 && hour < 11) return 'Selamat Pagi 🌄'
-  if (hour >= 11 && hour < 15) return 'Selamat Siang 🏙️'
-  if (hour >= 15 && hour < 18) return 'Selamat Sore 🌇'
-  return 'Selamat Malam 🌌'
+  if (hour >= 4 && hour < 11) return 'Good Morning 🌄'
+  if (hour >= 11 && hour < 15) return 'Good Afternoon 🏙️'
+  if (hour >= 15 && hour < 18) return 'Good Evening 🌇'
+  return 'Good Night 🌌'
 }
 
-global.getGreet = (pushName = 'Pengguna', senderJid) => {
-  const greet = getGreeting()
+global.getGreet = (pushName = 'User', senderJid) => {
+   const greet = getGreeting()
   const user = global.system.getUser(global.sender)
   const uptime = process.uptime() * 1000
   const userTag = senderJid ? `@${senderJid.split('@')[0]}` : pushName
@@ -96,24 +94,24 @@ const sistem = (sistemSize / (1024 * 1024)).toFixed(2)
 global.ukDb = ukDb
 global.sis = sistem
   return (
-`👋 Hai ${userTag}, ${greet}
+`👋 Hi ${userTag}, ${greet}
 
-> Nama     : ${pushName}
-> Status   : ${user.premium ? '💎 Premium' : 'Freemium'}
+> Name\t\t: ${pushName}
+> Status\t\t: ${user.premium ? '💎 Premium' : 'Freemium'}
 
- Statistik   :
-> Uptime     : ${moment.duration(uptime).humanize()}
-> Database   : ${ukDb} KB
-> Sistem     : ${sistem} MB
-> Library    : Baileys-x
-> Total Like : *${like}* ♥️
+ Statistics  :
+> Uptime\t\t: ${moment.duration(uptime).humanize()}
+> Database\t: ${ukDb} KB
+> Sistem\t\t: ${sistem} MB
+> Library\t: Baileys-x
+> Total Like\t: *${like}* ♥️
 
- Keterangan:
-> ⓞ : Owner Only
-> ℗  : Premium Only
-> ©  : Coin
-> ⓕ : Free
+ Information:
+> ⓞ\t: Owner Only
+> ℗\t: Premium Only
+> ©\t: Coin
+> ⓕ\t: Free
 
-*${global.bot.name}* bisa membantumu melakukan banyak hal, namun masih dalam tahap pengembangan.`.trim()
+▫️ ${global.bot.name} is a multifunctional WhatsApp assistant designed to help with chatting, downloading media, playing fun games, managing groups, and providing useful tools,while also supporting premium features for advanced users.`
   )
 }

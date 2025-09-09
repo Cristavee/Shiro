@@ -1,26 +1,21 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['anime', 'mal'],
   tag: 'search',
-  description: 'Cari dan lihat detail anime dari MyAnimeList (via API Asep Haryana)',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: false,
   public: true,
   premium: false,
   coin: 3,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) return m.reply('⚠️ Masukkan judul anime!\nContoh: .anime Charlotte')
-
-    try {
+      try {
       const res = await axios.get('https://apidl.asepharyana.tech/api/weebs/anime-info', {
         params: { query: text }
       })
-
-      const data = res.data
+        const data = res.data
       if (!data || !data.title) return m.reply('❌ Anime tidak ditemukan.')
  const syn = await criv.translate(data.synopsis)
       const teks = `
@@ -33,17 +28,14 @@ export default {
 💾 Favorites: ${data.favorites}
 🎭 Genres: ${data.genres}
 🔗 URL: ${data.url}
-
-📖 *Synopsis:*
+  📖 *Synopsis:*
 ${syn}
 `.trim()
-
-      await criv.sendMessage(m.chat, {
+        await criv.sendMessage(m.chat, {
         image: { url: data.images.jpg.image_url },
         caption: teks
       }, { quoted: m })
-
-    } catch (err) {
+      } catch (err) {
       console.error(err)
       m.reply('⚠️ Terjadi kesalahan saat mengambil data anime.')
     }

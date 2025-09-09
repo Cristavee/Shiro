@@ -1,8 +1,7 @@
 export default {
   command: ['groupset', 'gsetting', 'set'],
   tag: 'group',
-  description: 'Mengubah pengaturan grup (announcement, not_announcement, locked, unlocked)',
-  owner: false,
+owner: false,
   admin: true, // hanya admin bisa pakai
   botAdmin: true, // bot harus admin untuk update
   public: true,
@@ -10,8 +9,7 @@ export default {
   premium: false,
   coin: 0,
   cooldown: 5000,
-
-  async run(criv, { m, from, args, command, pushName }) {
+    async run(criv, { m, from, args, command, pushName }) {
     try {
       if (!args[0]) {
         return criv.sendMessage(from, { text: 
@@ -22,10 +20,8 @@ export default {
           '4. allset - semua bisa ubah pengaturan grup' 
         }, { quoted: m });
       }
-
-      const setting = args[0].toLowerCase();
-
-      switch(setting) {
+        const setting = args[0].toLowerCase();
+        switch(setting) {
         case 'close':
           await criv.groupSettingUpdate(from, 'announcement');
           criv.sendMessage(from, { text: 'Grup sekarang hanya admin yang bisa mengirim pesan.' }, { quoted: m });
@@ -45,8 +41,7 @@ export default {
         default:
           criv.sendMessage(from, { text: 'Pengaturan tidak dikenali.' }, { quoted: m });
       }
-
-    } catch (error) {
+      } catch (error) {
       console.error(error);
       criv.sendMessage(from, { text: 'Terjadi kesalahan saat mengubah pengaturan grup.' }, { quoted: m });
     }

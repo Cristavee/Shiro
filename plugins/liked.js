@@ -1,8 +1,7 @@
 export default {
   command: ['like'], 
-  tag: '', 
-  description: '', 
-  owner: false,
+  tag: '',
+owner: false,
   admin: false, 
   botAdmin: false, 
   public: true, 
@@ -10,8 +9,7 @@ export default {
   premium: false,
   coin: 5,
   cooldown: 100,
-
-  async run(criv, { system,  m}) {
+    async run(criv, { system,  m}) {
  await system.like()
   m.reply('Like +1 ♥️')
   }

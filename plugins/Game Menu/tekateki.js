@@ -1,39 +1,30 @@
 import axios from 'axios'
 import { addReplyGame, replyGames } from '../../lib/game.js'
 import { decodeJid } from '../../lib/helpers.js'
-
-export default {
+  export default {
   command: ['tekateki', 'ttk'],
   tag: 'game',
-  description: 'Mainkan teka-teki jawab pertanyaannya!',
-  public: true,
+public: true,
   coin: 0,
   cooldown: 3000,
-
-  async run(criv, { m, sender, text, system }) {
+    async run(criv, { m, sender, text, system }) {
     if (Object.values(replyGames).find(g => decodeJid(g.sender) === decodeJid(sender))) {
       return m.reply('Kamu masih punya game yang belum selesai.\nKetik *.skip* untuk menyerah.')
     }
-
-    try {
+      try {
       const { data } = await axios.get('https://api.siputzx.my.id/api/games/tekateki')
       const soal = data?.data?.soal
       const jawaban = data?.data?.jawaban?.toString().trim().toUpperCase()
-
-      if (!soal || !jawaban) {
+        if (!soal || !jawaban) {
         console.log('[DEBUG] Data API tidak lengkap:', data)
         return m.reply('Soal tidak lengkap dari API. Coba lagi nanti.')
       }
-
-      const rewardCoin = 30
+        const rewardCoin = 30
       const timeout = 30000
-
-      const caption = `Pertanyaan: ${soal}\nWaktu: ${timeout / 1000} detik\nHadiah: ${rewardCoin} coin\n\nBalas pesan ini untuk menjawab.\nGunakan *.skip* untuk menyerah.`
-
-      const sent = await criv.sendMessage(m.chat, { text: caption }, { quoted: m })
+        const caption = `Pertanyaan: ${soal}\nWaktu: ${timeout / 1000} detik\nHadiah: ${rewardCoin} coin\n\nBalas pesan ini untuk menjawab.\nGunakan *.skip* untuk menyerah.`
+        const sent = await criv.sendMessage(m.chat, { text: caption }, { quoted: m })
       const gameId = sent.key.id
-
-      addReplyGame(gameId, {
+        addReplyGame(gameId, {
         sender: decodeJid(sender),
         chatId: m.chat,
         answer: jawaban,

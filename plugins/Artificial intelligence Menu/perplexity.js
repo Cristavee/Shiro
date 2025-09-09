@@ -1,10 +1,8 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['perplexity', 'ppy', 'perplex'], 
-  tag: 'ai', 
-  description: 'Chat dengan ai perplexity.', 
-  owner: false,
+  tag: 'ai',
+owner: false,
   admin: false, 
   botAdmin: false, 
   public: true, 
@@ -12,8 +10,7 @@ export default {
   premium: false,
   coin: 5,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) text = 'hai'
     try {
       const url = 'https://api.siputzx.my.id/api/ai/perplexity'
@@ -22,8 +19,7 @@ export default {
       })
      
       const res = data?.data?.output || data?.output || 'Tidak ada respon dari AI'
-
-      await criv.sendMessage(m.chat, {
+        await criv.sendMessage(m.chat, {
         text: res,
         contextInfo: {
           externalAdReply: {

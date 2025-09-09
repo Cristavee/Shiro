@@ -1,8 +1,7 @@
 export default {
   command: ['requestjoin', 'request'],
   tag: 'group',
-  description: 'Menampilkan daftar orang yang request join grup',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: true, 
   public: true,
@@ -10,23 +9,18 @@ export default {
   premium: false,
   coin: 0,
   cooldown: 5000,
-
-  async run(criv, { m, from, command, pushName }) {
+    async run(criv, { m, from, command, pushName }) {
     try {
       const response = await criv.groupRequestParticipantsList(from);
-
-      if (!response || response.length === 0) {
+        if (!response || response.length === 0) {
         return criv.sendMessage(from, { text: 'Tidak ada request join saat ini.' }, { quoted: m });
       }
-
-      let listText = '*Daftar Request Join Grup:*\n\n';
+        let listText = '*Daftar Request Join Grup:*\n\n';
       response.forEach((r, i) => {
         listText += `> ${i + 1}. ${r.id}\n`;
       });
-
-      criv.sendMessage(from, { text: listText }, { quoted: m });
-
-    } catch (error) {
+        criv.sendMessage(from, { text: listText }, { quoted: m });
+      } catch (error) {
       console.error(error);
       criv.sendMessage(from, { text: 'Terjadi kesalahan saat mengambil daftar request join.' }, { quoted: m });
     }

@@ -1,10 +1,8 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['quotes', 'pesan', 'motivasi'], 
-  tag: 'random', 
-  description: '', 
-  owner: false,
+  tag: 'random',
+owner: false,
   admin: false, 
   botAdmin: false, 
   public: true, 
@@ -12,8 +10,7 @@ export default {
   premium: false,
   coin: 5,
   cooldown: 5000,
-
-  async run(criv, { m }) {
+    async run(criv, { m }) {
   const data = await axios.get('https://apis.davidcyriltech.my.id/random/quotes')
   const has = data.data.quote
   const qu = await criv.translate(has.text)

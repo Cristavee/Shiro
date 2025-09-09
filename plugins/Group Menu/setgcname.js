@@ -1,8 +1,7 @@
 export default {
   command: ['setgrupname', 'gcname'],
   tag: 'group',
-  description: 'Mengganti nama grup.',
-  owner: false,
+owner: false,
   admin: true,
   botAdmin: true,
   group: true,
@@ -10,13 +9,11 @@ export default {
   premium: false,
   coin: 10,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) {
       return m.reply(msg.query);
     }
-
-    try {
+      try {
       await criv.groupUpdateSubject(m.chat, text);
       await m.reply(`Nama grup berhasil diubah menjadi: *${text}*`);
     } catch (error) {

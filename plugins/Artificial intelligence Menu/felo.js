@@ -14,7 +14,7 @@ export default {
     
   async run(criv, { m,  text }) {
       if (!text) text = 'hai'
-      const conf = 'jawab dengan bahasa Indonesia: '
+      const conf = `jawab dengan bahasa ${criv.lang}: `
       
      try {
       const res = await axios.get(`https://api.siputzx.my.id/api/ai/felo?query=${encodeURIComponent(conf+text)}`)   
@@ -27,7 +27,7 @@ export default {
       title: "Felo",
       thumbnailUrl: 'https://pomf2.lain.la/f/6m59zb9h.webp',
       mediaType: 1,
-      renderLargerThumbnail: true
+      renderLargerThumbnail: false
     },
     isForwarded: true
   },

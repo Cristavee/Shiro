@@ -1,37 +1,29 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['spotifysearch', 'sps'],
   tag: 'search',
-  description: 'Cari lagu dari Spotify.',
-  public: true,
+public: true,
   coin: 10,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) return m.reply('Masukkan judul lagu yang ingin dicari.')
-
-    try {
+      try {
       const { data } = await axios.get('https://api.siputzx.my.id/api/s/spotify', {
         params: { query: text }
       })
-
-      const result = data?.data
+        const result = data?.data
       if (!Array.isArray(result) || result.length === 0) {
         return m.reply('Lagu tidak ditemukan, coba kata kunci lain.')
       }
-
-      const res = result[0] // Ambil hasil pertama
-
-      const teks = `> *Judul:* ${res.title}
+        const res = result[0] // Ambil hasil pertama
+        const teks = `> *Judul:* ${res.title}
 > *Artis:* ${res.artist}
 > *Album:* ${res.album}
 > *Durasi:* ${res.duration}
 > *Rilis:* ${res.release_date}
 > *Link:* ${res.track_url}
 > *Preview:* ${res.preview_url || 'Tidak tersedia'}`
-
-      await criv.sendMessage(m.chat, {
+        await criv.sendMessage(m.chat, {
         image: { url: res.thumbnail },
         caption: teks,
         interactiveButtons: [
@@ -45,8 +37,7 @@ export default {
           }
         ]
       }, { quoted: global.fakeQuote })
-
-    } catch (err) {
+      } catch (err) {
       console.error(err)
       m.reply('Terjadi kesalahan saat mengambil lagu dari Spotify.')
     }

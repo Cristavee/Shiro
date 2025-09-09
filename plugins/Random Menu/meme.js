@@ -1,32 +1,25 @@
 import axios from 'axios'
-
-async function getLahelu() {
+  async function getLahelu() {
   const apiUrl = `https://api.siputzx.my.id/api/r/lahelu`
   const res = await axios.get(apiUrl)
   return res.data
 }
-
-export default {
+  export default {
   command: ['lahelu', 'meme', 'lh'],
   tag: 'random',
-  description: 'Cari random post dari Lahelu.',
-  public: true,
+public: true,
   cooldown: 5000,
-
-  async run(criv, { m }) {
+    async run(criv, { m }) {
     try {
       const result = await getLahelu()
       if (!result.status || !result.data.length) {
         return m.reply('❌ Tidak ada data Lahelu ditemukan.')
       }
-
-      const post = result.data[Math.floor(Math.random() * result.data.length)]
+        const post = result.data[Math.floor(Math.random() * result.data.length)]
       let mediaUrl = null
-
-      const mp4 = post.content.find(c => c.value.endsWith('.mp4'))
+        const mp4 = post.content.find(c => c.value.endsWith('.mp4'))
       const webp = post.content.find(c => c.value.endsWith('.webp'))
-
-      if (mp4) {
+        if (mp4) {
         mediaUrl = mp4.value
         await criv.sendMessage(m.chat, {
           video: { url: mediaUrl },

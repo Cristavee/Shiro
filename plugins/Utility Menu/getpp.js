@@ -1,27 +1,21 @@
 import fetch from "node-fetch";
-
-function getRealJid(m) {
+  function getRealJid(m) {
   let jid = null;
-
-  if (m.quoted) {
+    if (m.quoted) {
     jid = m.quoted.key?.participant;
   } else if (Array.isArray(m.message?.extendedTextMessage?.contextInfo?.mentionedJid) 
              && m.message.extendedTextMessage.contextInfo.mentionedJid.length) {
     jid = m.message.extendedTextMessage.contextInfo.mentionedJid[0];
   }
-
-  if (jid && jid.endsWith('@lid')) {
+    if (jid && jid.endsWith('@lid')) {
     jid = jid.replace('@lid', '@s.whatsapp.net');
   }
-
-  return jid || m.sender;
+    return jid || m.sender;
 }
-
-export default {
+  export default {
   command: ['getpp', 'getpic', 'pp'],
   tag: 'utility',
-  description: 'Mengambil foto profil user.',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: false,
   public: true,
@@ -29,44 +23,35 @@ export default {
   premium: false,
   coin: 10,
   cooldown: 5000,
-
-  async run(criv, { m, mentioned }) {
+    async run(criv, { m, mentioned }) {
     try {
       let targetJid = m.quoted?.sender || m.sender;
-
-      if (m.isGroup) {
+        if (m.isGroup) {
         if (m.quoted) targetJid = m.quoted.sender;
         else if (mentioned?.length) targetJid = mentioned[0];
         else targetJid = m.sender;
       } else {
         targetJid = m.quoted?.sender || m.sender;
       }
-
-      if (!targetJid) return m.reply('Target tidak ditemukan.');
-
-     
-
-// Jika masih format @lid, ubah ke format standar
+        if (!targetJid) return m.reply('Target tidak ditemukan.');
+       
+  // Jika masih format @lid, ubah ke format standar
 if (targetJid?.endsWith('@lid')) {
   targetJid = targetJid.replace('@lid', '@s.whatsapp.net');
 }
-
-// Sekarang targetJid sudah aman untuk profilePictureUrl
+  // Sekarang targetJid sudah aman untuk profilePictureUrl
 const profileUrl = await criv.profilePictureUrl(targetJid, 'image')
   .catch(() => "https://telegra.ph/file/24fa902ead26340f3df2c.png");
-
-const response = await fetch(profileUrl);
+  const response = await fetch(profileUrl);
 const buffer = await response.buffer();
-
-await criv.sendImage(m.chat, buffer, {
+  await criv.sendImage(m.chat, buffer, {
   caption: `Foto profil`,
   jpegThumbnail: buffer,
   quoted: m
 });
         
      
-
-    } catch (err) {
+      } catch (err) {
       console.error('Error getpp:', err);
       m.reply('Gagal mengambil foto profil.');
     }

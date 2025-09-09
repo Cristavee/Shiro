@@ -25,16 +25,16 @@
       }
     },
     "6285932203366": {
-      "coin": 2109,
+      "coin": 2274,
       "premium": true,
       "joinedAt": 1756480855143,
-      "exp": 955,
-      "level": 13,
+      "exp": 1130,
+      "level": 14,
       "bio": "*Tes*",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 679,
+      "commandCount": 788,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -44,8 +44,8 @@
       "name": "Cristave de equator",
       "status": null,
       "gameStats": {
-        "totalPlayed": 6,
-        "totalWins": 4
+        "totalPlayed": 7,
+        "totalWins": 5
       },
       "claims": {},
       "inventory": {
@@ -81,13 +81,13 @@
       "coin": 2070,
       "premium": false,
       "joinedAt": 1756482020496,
-      "exp": 110,
+      "exp": 140,
       "level": 2,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 14,
+      "commandCount": 16,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -105,13 +105,13 @@
       "coin": 2114,
       "premium": false,
       "joinedAt": 1756482157554,
-      "exp": 10,
+      "exp": 25,
       "level": 2,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 8,
+      "commandCount": 9,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -170,7 +170,7 @@
         "monthly": 0,
         "yearly": 0
       },
-      "name": "asuzu",
+      "name": "masuzu",
       "status": null,
       "gameStats": {
         "totalPlayed": 0,
@@ -253,20 +253,20 @@
       "coin": 2340,
       "premium": false,
       "joinedAt": 1756484107033,
-      "exp": 0,
+      "exp": 90,
       "level": 4,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 3,
       "lastMessage": 0,
-      "commandCount": 42,
+      "commandCount": 48,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
         "monthly": 0,
         "yearly": 0
       },
-      "name": "cii",
+      "name": "ciii",
       "status": null,
       "gameStats": {
         "totalPlayed": 10,
@@ -274,16 +274,16 @@
       }
     },
     "6285760204556": {
-      "coin": 2681,
+      "coin": 2801,
       "premium": true,
       "joinedAt": 1756484904950,
-      "exp": 935,
-      "level": 11,
+      "exp": 65,
+      "level": 12,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 451,
+      "commandCount": 467,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -306,13 +306,13 @@
       "coin": 2094,
       "premium": false,
       "joinedAt": 1756486145769,
-      "exp": 75,
+      "exp": 90,
       "level": 1,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 7,
+      "commandCount": 8,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -359,13 +359,13 @@
       "coin": 2120,
       "premium": false,
       "joinedAt": 1756486673659,
-      "exp": 120,
+      "exp": 165,
       "level": 2,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 16,
+      "commandCount": 19,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -508,13 +508,13 @@
       "coin": 2145,
       "premium": false,
       "joinedAt": 1756516715056,
-      "exp": 0,
+      "exp": 45,
       "level": 3,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 22,
+      "commandCount": 25,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -577,16 +577,16 @@
       }
     },
     "6281973760110": {
-      "coin": 2110,
+      "coin": 2140,
       "premium": false,
       "joinedAt": 1756520812489,
-      "exp": 175,
-      "level": 2,
+      "exp": 20,
+      "level": 3,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 19,
+      "commandCount": 22,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -609,13 +609,13 @@
       "coin": 2098,
       "premium": false,
       "joinedAt": 1756521664318,
-      "exp": 135,
+      "exp": 150,
       "level": 2,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 17,
+      "commandCount": 18,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -686,13 +686,13 @@
       "coin": 1100,
       "premium": false,
       "joinedAt": 1756536833788,
-      "exp": 50,
+      "exp": 95,
       "level": 1,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 4,
+      "commandCount": 7,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -865,13 +865,13 @@
       "coin": 1110,
       "premium": true,
       "joinedAt": 1756553201855,
-      "exp": 95,
+      "exp": 125,
       "level": 2,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 5388,
       "lastMessage": 0,
-      "commandCount": 15,
+      "commandCount": 17,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -1000,13 +1000,13 @@
       "coin": 105,
       "premium": false,
       "joinedAt": 1756558356115,
-      "exp": 40,
+      "exp": 160,
       "level": 2,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 10,
+      "commandCount": 18,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -2779,16 +2779,16 @@
       }
     },
     "6283165705501": {
-      "coin": 100,
+      "coin": 120,
       "premium": false,
       "joinedAt": 1756644662970,
-      "exp": 0,
-      "level": 1,
+      "exp": 95,
+      "level": 2,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 0,
       "lastMessage": 0,
-      "commandCount": 0,
+      "commandCount": 13,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
@@ -4240,7 +4240,7 @@
         "monthly": 0,
         "yearly": 0
       },
-      "name": "♪♪♪",
+      "name": "♪♪",
       "status": null,
       "gameStats": {
         "totalPlayed": 0,
@@ -4469,23 +4469,23 @@
       }
     },
     "6281219717518": {
-      "coin": 100,
+      "coin": 120,
       "premium": false,
       "joinedAt": 1756784663705,
-      "exp": 0,
-      "level": 1,
+      "exp": 40,
+      "level": 2,
       "bio": "Belum disetel. Gunakan .setbio [bio]",
       "isBanned": false,
       "warn": 15,
       "lastMessage": 0,
-      "commandCount": 0,
+      "commandCount": 10,
       "lastClaimed": {
         "daily": 0,
         "weekly": 0,
         "monthly": 0,
         "yearly": 0
       },
-      "name": ".",
+      "name": "RTM ||",
       "status": null,
       "gameStats": {
         "totalPlayed": 0,
@@ -4678,6 +4678,174 @@
         "yearly": 0
       },
       "name": "pergibegadang",
+      "status": null,
+      "gameStats": {
+        "totalPlayed": 0,
+        "totalWins": 0
+      }
+    },
+    "6285166165437": {
+      "coin": 100,
+      "premium": false,
+      "joinedAt": 1757355939607,
+      "exp": 0,
+      "level": 1,
+      "bio": "Belum disetel. Gunakan .setbio [bio]",
+      "isBanned": false,
+      "warn": 0,
+      "lastMessage": 0,
+      "commandCount": 0,
+      "lastClaimed": {
+        "daily": 0,
+        "weekly": 0,
+        "monthly": 0,
+        "yearly": 0
+      },
+      "name": "Miracle",
+      "status": null,
+      "gameStats": {
+        "totalPlayed": 0,
+        "totalWins": 0
+      }
+    },
+    "6285179890838": {
+      "coin": 100,
+      "premium": false,
+      "joinedAt": 1757356470205,
+      "exp": 0,
+      "level": 1,
+      "bio": "Belum disetel. Gunakan .setbio [bio]",
+      "isBanned": false,
+      "warn": 0,
+      "lastMessage": 0,
+      "commandCount": 0,
+      "lastClaimed": {
+        "daily": 0,
+        "weekly": 0,
+        "monthly": 0,
+        "yearly": 0
+      },
+      "name": ".netralitas",
+      "status": null,
+      "gameStats": {
+        "totalPlayed": 0,
+        "totalWins": 0
+      }
+    },
+    "6285178425091": {
+      "coin": 100,
+      "premium": false,
+      "joinedAt": 1757375767990,
+      "exp": 0,
+      "level": 1,
+      "bio": "Belum disetel. Gunakan .setbio [bio]",
+      "isBanned": false,
+      "warn": 0,
+      "lastMessage": 0,
+      "commandCount": 0,
+      "lastClaimed": {
+        "daily": 0,
+        "weekly": 0,
+        "monthly": 0,
+        "yearly": 0
+      },
+      "name": "andini syahputri",
+      "status": null,
+      "gameStats": {
+        "totalPlayed": 0,
+        "totalWins": 0
+      }
+    },
+    "6283143441799": {
+      "coin": 100,
+      "premium": false,
+      "joinedAt": 1757393862423,
+      "exp": 0,
+      "level": 1,
+      "bio": "Belum disetel. Gunakan .setbio [bio]",
+      "isBanned": false,
+      "warn": 0,
+      "lastMessage": 0,
+      "commandCount": 0,
+      "lastClaimed": {
+        "daily": 0,
+        "weekly": 0,
+        "monthly": 0,
+        "yearly": 0
+      },
+      "name": "ㅤㅤㅤㅤㅤㅤㅤ",
+      "status": null,
+      "gameStats": {
+        "totalPlayed": 0,
+        "totalWins": 0
+      }
+    },
+    "6281224322905": {
+      "coin": 100,
+      "premium": false,
+      "joinedAt": 1757394526168,
+      "exp": 0,
+      "level": 1,
+      "bio": "Belum disetel. Gunakan .setbio [bio]",
+      "isBanned": false,
+      "warn": 0,
+      "lastMessage": 0,
+      "commandCount": 0,
+      "lastClaimed": {
+        "daily": 0,
+        "weekly": 0,
+        "monthly": 0,
+        "yearly": 0
+      },
+      "name": ".",
+      "status": null,
+      "gameStats": {
+        "totalPlayed": 0,
+        "totalWins": 0
+      }
+    },
+    "6281298544962": {
+      "coin": 100,
+      "premium": false,
+      "joinedAt": 1757411575409,
+      "exp": 0,
+      "level": 1,
+      "bio": "Belum disetel. Gunakan .setbio [bio]",
+      "isBanned": false,
+      "warn": 0,
+      "lastMessage": 0,
+      "commandCount": 0,
+      "lastClaimed": {
+        "daily": 0,
+        "weekly": 0,
+        "monthly": 0,
+        "yearly": 0
+      },
+      "name": "Kartika Putri",
+      "status": null,
+      "gameStats": {
+        "totalPlayed": 0,
+        "totalWins": 0
+      }
+    },
+    "6288980192911": {
+      "coin": 120,
+      "premium": false,
+      "joinedAt": 1757413529098,
+      "exp": 35,
+      "level": 2,
+      "bio": "Belum disetel. Gunakan .setbio [bio]",
+      "isBanned": false,
+      "warn": 0,
+      "lastMessage": 0,
+      "commandCount": 9,
+      "lastClaimed": {
+        "daily": 0,
+        "weekly": 0,
+        "monthly": 0,
+        "yearly": 0
+      },
+      "name": "frogman🔱",
       "status": null,
       "gameStats": {
         "totalPlayed": 0,

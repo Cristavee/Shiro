@@ -1,18 +1,14 @@
 import moment from 'moment-timezone'
 import * as helpers from '../../lib/helpers.js'
-
-function formatNomor(nomor) {
+  function formatNomor(nomor) {
   return nomor.replace(/(.{4})/g, '$1-').replace(/-$/, '')
 }
-
-export default {
+  export default {
   command: ['about', 'bot'],
   tag: 'main',
-  description: 'Informasi bot',
-  public: true,
+public: true,
   coin: 10,
-
-  async run(criv, { m, system}) {
+    async run(criv, { m, system}) {
     const waktu = moment().tz('Asia/Jakarta').format('dddd, DD MMMM YYYY • HH:mm:ss')
     const ownerNumber = (global.bot?.owner || '').replace(/[^0-9]/g, '') 
     const prefix = Array.isArray(global.prefix) && global.prefix.length > 0 ? global.prefix[0] : '-'
@@ -20,27 +16,23 @@ export default {
     const wa = formatNomor(global.wa)
     const teks = `
 *───「 About this bot 」───*
-
-\`\`\`
+  \`\`\`
 Bot Name      : ${global.bot?.name || 'Bot'}
 Owner Name    : ${global.bot?.ownerName || 'Owner'}
 Owner Number  : .owner
 Prefix        : ${prefix}
 Full          : ${global.bot?.full || 'undefined'}
 Total Fitur   : ${totalFeature}
-
-Social Media
+  Social Media
 WhatsApp      : ${wa || '-'}
 Instagram     : ${global.ig || '-'}
 Facebook      : ${global.fb || '-'}
 YouTube       : ${global.yt || '-'}
 GitHub        : ${global.git || '-'}
-
-Note:
+  Note:
 Bot ini masih dalam tahap pengembangan.
 Beberapa fitur mungkin belum optimal dan masih terdapat error.
-
-Waktu Sekarang: ${waktu}
+  Waktu Sekarang: ${waktu}
 \`\`\`
 `.trim()
     await criv.sendMessage(m.chat, {

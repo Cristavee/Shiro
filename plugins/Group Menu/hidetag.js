@@ -1,8 +1,7 @@
 export default {
   command: ['hidetag', 'ht'],
   tag: 'group',
-  description: 'Mengirim pesan dan mention.',
-  group: true,
+group: true,
   admin: true,
   botAdmin: false,
   coin: 15,

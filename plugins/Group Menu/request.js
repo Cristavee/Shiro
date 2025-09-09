@@ -1,8 +1,7 @@
 export default {
   command: ['acc', 'reject'], 
-  tag: 'group', 
-  description: 'Approve/Reject', 
-  owner: false,
+  tag: 'group',
+owner: false,
   admin: true, 
   botAdmin: true, 
   public: false, 
@@ -10,30 +9,24 @@ export default {
   premium: false,
   coin: 10,
   cooldown: 5000,
-
-  async run(criv, { m, from, command }) {
+    async run(criv, { m, from, command }) {
     try {
       const requests = await criv.groupRequestParticipantsList(from)
       if (!requests || requests.length === 0) {
         return m.reply('⚠️ Tidak ada request join yang pending.')
       }
-
-      const users = requests.map(r => r.jid)
-
-      const action = command === 'acc' ? 'approve' : 'reject'
-
-      const response = await criv.groupRequestParticipantsUpdate(
+        const users = requests.map(r => r.jid)
+        const action = command === 'acc' ? 'approve' : 'reject'
+        const response = await criv.groupRequestParticipantsUpdate(
         from,
         users,
         action
       )
-
-      await m.reply(
+        await m.reply(
         `✅ Berhasil ${action === 'approve' ? 'menerima' : 'menolak'} ${users.length} request join.`
       )
       console.log(response)
-
-    } catch (e) {
+      } catch (e) {
       console.error(e)
       await m.reply('❌ Terjadi error saat memproses request.')
     }

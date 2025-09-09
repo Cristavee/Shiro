@@ -1,34 +1,27 @@
 import axios from 'axios'
 import { addReplyGame, replyGames } from '../../lib/game.js'
 import { decodeJid } from '../../lib/helpers.js'
-
-export default {
+  export default {
   command: ['lengkapikalimat', 'lkm'],
   tag: 'game',
-  description: 'Mainkan Lengkapi Kalimat, jawab pertanyaannya!',
-  public: true,
+public: true,
   coin: 0,
   cooldown: 3000,
-
-  async run(criv, { m, sender, system }) {
+    async run(criv, { m, sender, system }) {
     if (Object.values(replyGames).find(g => decodeJid(g.sender) === decodeJid(sender))) {
       return m.reply('Kamu masih punya game yang belum selesai.\nKetik *.skip* untuk menyerah.')
     }
-
-    try {
+      try {
       const { data } = await axios.get('https://api.siputzx.my.id/api/games/lengkapikalimat')
       const pertanyaan = data?.data?.pertanyaan
       const jawaban = data?.data?.jawaban?.toString().trim().toUpperCase()
-
-      if (!pertanyaan || !jawaban) return m.reply('Soal tidak lengkap dari API. Coba lagi nanti.')
-
-      const rewardCoin = 25
+        if (!pertanyaan || !jawaban) return m.reply('Soal tidak lengkap dari API. Coba lagi nanti.')
+        const rewardCoin = 25
       const timeout = 30000
       const caption = `📝 *Lengkapi Kalimat*\n\nPertanyaan: ${pertanyaan}\nWaktu: ${timeout / 1000} detik\nHadiah: ${rewardCoin} coin\n\nBalas pesan ini untuk menjawab.\nGunakan *.skip* untuk menyerah.`
       const sent = await criv.sendMessage(m.chat, { text: caption }, { quoted: m })
       const gameId = sent.key.id
-
-      addReplyGame(gameId, {
+        addReplyGame(gameId, {
         sender: decodeJid(sender),
         chatId: m.chat,
         answer: jawaban,
@@ -50,8 +43,7 @@ export default {
           }, { quoted: m })
         }
       })
-
-    } catch (err) {
+      } catch (err) {
       console.error(err)
       m.reply('Gagal mengambil soal. Coba lagi nanti.')
     }

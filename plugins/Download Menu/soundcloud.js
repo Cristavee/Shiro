@@ -1,10 +1,8 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['soundcloud', 'sc'], 
-  tag: 'download', 
-  description: 'Download musik dari SoundCloud', 
-  owner: false,
+  tag: 'download',
+owner: false,
   admin: false, 
   botAdmin: false, 
   public: true, 
@@ -12,21 +10,17 @@ export default {
   premium: false,
   coin: 5,
   cooldown: 5000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) {
       return m.reply('Masukkan link SoundCloud!\nContoh: .soundcloud https://m.soundcloud.com/')
     }
-
-    try {
+      try {
       const res = await axios.get(`https://api.nasirxml.my.id/download/soundcloud?url=${encodeURIComponent(text)}`)
       const data = res.data.result
-
-      if (!data || !data.url) {
+        if (!data || !data.url) {
         return m.reply('❌ Gagal mengambil data dari SoundCloud!')
       }
-
-      let caption = `
+        let caption = `
 🎶 *SOUNDCLOUD DOWNLOAD*
 ───────────────────────
 > Judul: ${data.title}
@@ -35,19 +29,16 @@ export default {
 > Followers: ${data.author.followers_count}
 > Likes: ${data.author.likes_count}
 `
-
-      await criv.sendMessage(m.chat, {
+        await criv.sendMessage(m.chat, {
         image: { url: data.thumbnail },
         caption
       }, { quoted: m })
-
-      await criv.sendMessage(m.chat, {
+        await criv.sendMessage(m.chat, {
         audio: { url: data.url },
         mimetype: 'audio/mp4',
         fileName: `${data.title}.mp3`
       }, { quoted: m })
-
-    } catch (e) {
+      } catch (e) {
       console.error(e)
       m.reply('⚠️ Terjadi kesalahan saat download SoundCloud.')
     }

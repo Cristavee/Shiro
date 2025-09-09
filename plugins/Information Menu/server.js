@@ -1,28 +1,22 @@
 import os from 'os'
 import { execSync } from 'child_process'
-
-export default {
+  export default {
   command: ['server'],
   name: 'server',
   tag: 'information',
-  description: 'Menampilkan informasi server',
-  public: true,
-
-  async run(criv, { m }) {
+public: true,
+    async run(criv, { m }) {
     try {
       const platform = os.platform()
       const type = os.type()
       const release = os.release()
-
-      const cpus = os.cpus()
+        const cpus = os.cpus()
       const cpuModel = cpus[0].model
       const cpuCores = cpus.length
-
-      const totalMem = os.totalmem() / 1024 / 1024 / 1024
+        const totalMem = os.totalmem() / 1024 / 1024 / 1024
       const freeMem = os.freemem() / 1024 / 1024 / 1024
       const usedMem = totalMem - freeMem
-
-      let storageDetails = ''
+        let storageDetails = ''
       try {
         const stdout = execSync('df -h --output=source,size,used,avail,target -x tmpfs -x devtmpfs').toString()
         const lines = stdout.trim().split('\n').slice(1)
@@ -35,31 +29,25 @@ export default {
       } catch (err) {
         storageDetails = '\nGagal mendapatkan info storage.'
       }
-
-      const teks = `
+        const teks = `
 *Server Information:*
-
--     _OS_
+  -     _OS_
 > OS Platform : ${platform}
 > OS Type     : ${type}
 > OS Release  : ${release}
-
--     _CPU_
+  -     _CPU_
 > CPU Model   : ${cpuModel}
 > CPU Cores   : ${cpuCores}
-
--     _RAM_
+  -     _RAM_
 > RAM Total   : ${totalMem.toFixed(2)} GB
 > RAM Terpakai: ${usedMem.toFixed(2)} GB
 > RAM Bebas   : ${freeMem.toFixed(2)} GB 
 ${storageDetails}
 `.trim()
-
-      await criv.sendMessage(m.chat, {
+        await criv.sendMessage(m.chat, {
         text: teks
       }, { quoted: m })
-
-    } catch (err) {
+      } catch (err) {
       console.error('Error ambil info server:', err)
       await m.reply('Maaf, gagal menampilkan informasi server.')
     }

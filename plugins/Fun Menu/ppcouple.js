@@ -1,10 +1,8 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['ppcouple', 'ppcp'],
   tag: 'fun',
-  description: 'Random foto couple',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: false,
   public: true,
@@ -12,14 +10,12 @@ export default {
   premium: false,
   coin: 0,
   cooldown: 5000,
-
-  async run(criv, { m }) {
+    async run(criv, { m }) {
     try {
       let res = await axios.get('https://apis.davidcyriltech.my.id/couplepp')
       let male = res.data.male
       let female = res.data.female
-
-      await criv.sendAlbumMessage(
+        await criv.sendAlbumMessage(
         m.chat,
         [
           {

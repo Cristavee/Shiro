@@ -1,29 +1,22 @@
 import axios from "axios"
-
-export default {
+  export default {
   command: ["ip", "ipinfo", "iplocation", "iploc"],
   tag: "utility",
-  description: "Cek lokasi berdasarkan IP",
-  public: true,
+public: true,
   coin: 10,
-
-  async run(criv, { m, args }) {
+    async run(criv, { m, args }) {
     const ip = args[0]
     if (!ip) return criv.reply(m, "📌 Contoh: .ipinfo 123.4.567.89")
-
-    try {
+      try {
       const url = `https://apidl.asepharyana.tech/api/tool/v2/iplocation?ip=${ip}`
       const res = await axios.get(url)
-
-      if (!res.data || !res.data.ipInfo) {
+        if (!res.data || !res.data.ipInfo) {
         return criv.reply(m, "❌ Data tidak ditemukan!")
       }
-
-      const d = res.data.ipInfo
+        const d = res.data.ipInfo
       const teks = `
 🌐 *IP Information*
-
-🔹 IP: ${d.ip}
+  🔹 IP: ${d.ip}
 🏙️ Kota: ${d.city}
 🌍 Region: ${d.region}
 🏳️ Negara: ${d.country}
@@ -32,8 +25,7 @@ export default {
 🏤 Kode Pos: ${d.postal}
 🕒 Zona Waktu: ${d.timezone}
       `.trim()
-
-      await criv.reply(m, teks)
+        await criv.reply(m, teks)
     } catch (e) {
       console.error(e)
       criv.reply(m, "⚠️ Gagal mengambil data, coba lagi nanti.")

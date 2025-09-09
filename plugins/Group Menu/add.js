@@ -1,8 +1,7 @@
 export default {
   command: ['add', 'tambah'],
   tag: 'group',
-  description: 'Menambahkan anggota ke grup.',
-  owner: false,
+owner: false,
   admin: true,
   botAdmin: true,
   public: true,
@@ -10,11 +9,9 @@ export default {
   premium: false,
   coin: 0,
   cooldown: 5000,
-
-  async run(criv, { m, text, mentioned, quoted }) {
+    async run(criv, { m, text, mentioned, quoted }) {
     let usersToAdd = []
-
-    if (mentioned) {
+      if (mentioned) {
       usersToAdd.push(mentioned)
     } else if (quoted && quoted.sender) {
       usersToAdd.push(quoted.sender)
@@ -26,42 +23,34 @@ export default {
         usersToAdd.push(number)
       }
     }
-
-    if (usersToAdd.length === 0) {
+      if (usersToAdd.length === 0) {
       return m.reply(global.msg.reply)
     }
-
-    let successCount = 0
+      let successCount = 0
     let failedList = []
-
-    for (let userJid of usersToAdd) {
+      for (let userJid of usersToAdd) {
       if (!userJid.endsWith('@s.whatsapp.net')) {
         userJid = userJid.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
       }
       if (userJid.startsWith('0')) {
         userJid = '62' + userJid.substring(1)
       }
-
-      try {
+        try {
         const response = await criv.groupParticipantsUpdate(m.chat, [userJid], 'add')
-
-        if (response[0] && response[0].status == 200) {
+          if (response[0] && response[0].status == 200) {
           successCount++
         } else {
           let statusMessage = response[0]?.status ? `Status: ${response[0].status}` : 'Tidak diketahui'
-
-          if (response[0]?.status === 403) {
+            if (response[0]?.status === 403) {
             try {
               const groupInviteCode = await criv.groupInviteCode(m.chat)
               const inviteLink = `https://chat.whatsapp.com/${groupInviteCode}`
               const groupMetadata = await criv.groupMetadata(m.chat)
               const groupName = groupMetadata.subject || 'Grup Ini'
-
-              await criv.sendMessage(userJid, {
+                await criv.sendMessage(userJid, {
                 text: `Kami mencoba menambahkan Anda ke grup "${groupName}", tetapi pengaturan privasi Anda tidak mengizinkannya. Silakan bergabung lewat link ini:\n\n${inviteLink}`
               })
-
-              statusMessage = 'Privasi aktif, link dikirim via chat pribadi.'
+                statusMessage = 'Privasi aktif, link dikirim via chat pribadi.'
             } catch (inviteError) {
               statusMessage = `Gagal kirim link undangan: ${inviteError.message}`
             }
@@ -76,8 +65,7 @@ export default {
           } else if (response[0]?.status === 400 && response[0]?.code === '400') {
             statusMessage = 'Permintaan tidak valid.'
           }
-
-          failedList.push(`${userJid.split('@')[0]} (${statusMessage})`)
+            failedList.push(`${userJid.split('@')[0]} (${statusMessage})`)
         }
       } catch (error) {
         if (error.message === 'bad-request') {
@@ -87,20 +75,12 @@ export default {
         }
       }
     }
-
-    let result = `*Status Penambahan Anggota:*\n`
+      let result = `*Status Penambahan Anggota:*\n`
     result += `Berhasil: ${successCount}\n`
-
-    if (failedList.length > 0) {
+      if (failedList.length > 0) {
       result += `Gagal: ${failedList.length}\n- ${failedList.join('\n- ')}\n`
     }
-
-    await m.reply(result)
+      await m.reply(result)
   }
 }
-
-
-
-
-
-
+  

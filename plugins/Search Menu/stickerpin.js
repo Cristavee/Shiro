@@ -1,49 +1,39 @@
 import axios from 'axios'
-
-export default {
+  export default {
   command: ['stickpin', 'spin'],
   tag: 'search',
-  description: 'Cari stiker dari Pinterest.',
-  owner: false,
+owner: false,
   admin: false,
   botAdmin: false,
   public: true,
   premium: false,
   coin: 10,
   cooldown: 30000,
-
-  async run(criv, { m, text }) {
+    async run(criv, { m, text }) {
     if (!text) return m.reply(global.msg.query)
-
-    const args = text.split(' ')
+      const args = text.split(' ')
     let query = 'stiker whatsapp ' + text
     let count = 1
-
-    const lastArg = parseInt(args[args.length - 1])
+      const lastArg = parseInt(args[args.length - 1])
     if (!isNaN(lastArg) && lastArg > 0) {
       if (lastArg > 5) return m.reply('Tidak boleh lebih dari 5')
       count = lastArg
       query = args.slice(0, -1).join(' ')
     }
-
-    try {
+      try {
       const { data } = await axios.get('https://api.siputzx.my.id/api/s/pinterest', {
         params: { query, type: 'image' }
       })
-
-      if (!data?.status || !Array.isArray(data.data) || data.data.length === 0) {
+        if (!data?.status || !Array.isArray(data.data) || data.data.length === 0) {
         return m.reply(`Gambar untuk "${query}" tidak ditemukan.`)
       }
-
-      const results = data.data
+        const results = data.data
       const numStickersToSend = Math.min(count, results.length)
       const sentUrls = new Set()
-
-      for (let i = 0; i < numStickersToSend; i++) {
+        for (let i = 0; i < numStickersToSend; i++) {
         let attempts = 0
         let selectedUrl = null
-
-        while (attempts < results.length * 2) {
+          while (attempts < results.length * 2) {
           const randomIndex = Math.floor(Math.random() * 7)
           const candidate = results[randomIndex]?.image_url
           if (candidate && !sentUrls.has(candidate)) {
@@ -52,13 +42,11 @@ export default {
           }
           attempts++
         }
-
-        if (!selectedUrl) {
+          if (!selectedUrl) {
           console.warn(`Gagal memilih gambar unik untuk stiker ke-${i + 1}`)
           continue
         }
-
-        try {
+          try {
           const res = await axios.get(selectedUrl, { responseType: 'arraybuffer' })
           await criv.sleep(2)
           await criv.sendAsSticker(m.chat, Buffer.from(res.data), { quoted: m })
@@ -67,12 +55,10 @@ export default {
           console.error(`Gagal mengirim stiker dari URL: ${selectedUrl}`, err)
         }
       }
-
-      if (sentUrls.size === 0) {
+        if (sentUrls.size === 0) {
         m.reply('Gagal mengirim stiker. Semua percobaan gagal.')
       }
-
-    } catch (err) {
+      } catch (err) {
       console.error(err)
       m.reply(global.msg.error)
     }

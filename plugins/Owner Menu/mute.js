@@ -3,9 +3,7 @@ export default {
   tag: 'owner',
   group: true,
   owner: true,
-  description: 'Mute group.',
-
-  async run(criv, { m, system}) {
+async run(criv, { m, system}) {
     await system.mute(m.chat)
     m.reply('Bot dimute.')
   }
