@@ -1,26 +1,31 @@
 import axios from 'axios'
-  export default {
-  command: ['muslimai', 'aimuslim', 'aiislam', 'muslim'], 
+
+export default {
+  command: ['muslimai', 'aimuslim', 'aiislam', 'muslim'],
   tag: 'ai',
-owner: false,
-  admin: false, 
-  botAdmin: false, 
-  public: true, 
+  owner: false,
+  admin: false,
+  botAdmin: false,
+  public: true,
   group: false,
   premium: false,
   coin: 5,
   cooldown: 5000,
-    async run(criv, { m, text }) {
+
+  async run(criv, { m, text }) {
     if (!text) text = 'hai'
-try {
-  const url = 'https://api.siputzx.my.id/api/ai/muslimai'
-  const data = await axios.get(url, { params: { query: text}})
-  const res = data.data.data
-  
-  await m.reply(res)
-    } catch (e) {
-        console.log(e)
-        m.reply(msg.error)
+
+    try {
+      const res = await axios.get('https://api.siputzx.my.id/api/ai/muslimai', {
+        params: { query: text }
+      })
+
+      const ans = res.data.data
+      await m.reply(ans)
+
+    } catch (err) {
+      console.error('MuslimAI Error:', err?.response?.data || err.message)
+      m.reply(msg.error)
     }
   }
 }

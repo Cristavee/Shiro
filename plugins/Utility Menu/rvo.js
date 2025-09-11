@@ -1,25 +1,31 @@
 export default {
   command: ['readviewonce', 'rvo'],
   tag: 'utility',
-public: true,
+  public: true,
   premium: true,
   coin: 5,
   cooldown: 5000,
-    async run(criv, { m }) {
+
+  async run(criv, { m }) {
     try {
-      const quotedMsg = m.quoted?.isMedia ? m.quoted : (m.isMedia ? m : null)
+      const quotedMsg = m.quoted?.isMedia ? m.quoted : (m.isMedia ? m : null);
       if (!quotedMsg) return criv.reply(m, global.msg.reply);
-        const isViewOnce = Object.values(quotedMsg?.message || {})
+
+      // Cek apakah media bersifat viewOnce
+      const isViewOnce = Object.values(quotedMsg?.message || {})
         .some(msgPart => msgPart?.viewOnce === true);
-        if (!isViewOnce) return criv.reply(m, global.msg.media);
-        const buffer = await quotedMsg.download?.().catch(() => null);
+      if (!isViewOnce) return criv.reply(m, global.msg.media);
+
+      const buffer = await quotedMsg.download?.().catch(() => null);
       if (!buffer) return criv.reply(m, global.msg.error);
-        const mediaType = quotedMsg.mediaType;
+
+      const mediaType = quotedMsg.mediaType;
       const mediaContent = quotedMsg?.message?.[mediaType];
       const mime = mediaContent?.mimetype || '';
       const caption = mediaContent?.caption || '';
-        let msgToSend = {};
-        if (/image/.test(mime)) {
+
+      let msgToSend = {};
+      if (/image/.test(mime)) {
         msgToSend.image = buffer;
       } else if (/video/.test(mime)) {
         msgToSend.video = buffer;
@@ -29,11 +35,13 @@ public: true,
       } else {
         return criv.reply(m, global.msg.media);
       }
-        if (caption) msgToSend.caption = caption;
-        await criv.sendMessage(m.chat, msgToSend, { quoted: m })
-      } catch (err) {
+
+      if (caption) msgToSend.caption = caption;
+
+      await criv.sendMessage(m.chat, msgToSend, { quoted: m });
+    } catch (err) {
       console.error('❌ RVO error:', err);
       criv.reply(m, global.msg.error);
     }
   }
-}
+};

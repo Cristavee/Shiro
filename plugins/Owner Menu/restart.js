@@ -1,9 +1,10 @@
 export default {
-  command: ['restart'],
+  command: ['restart', 'r'],
   tag: 'owner',
-owner: true,
+  owner: true,
   public: false,
     async run(criv, { m }) {
+        
     await m.reply('Memulai ulang bot...')
     process.exit(0)
   }

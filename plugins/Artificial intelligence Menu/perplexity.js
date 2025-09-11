@@ -1,30 +1,36 @@
 import axios from 'axios'
-  export default {
-  command: ['perplexity', 'ppy', 'perplex'], 
+
+export default {
+  command: ['perplexity', 'ppy', 'perplex'],
   tag: 'ai',
-owner: false,
-  admin: false, 
-  botAdmin: false, 
-  public: true, 
+  owner: false,
+  admin: false,
+  botAdmin: false,
+  public: true,
   group: false,
   premium: false,
   coin: 5,
   cooldown: 5000,
-    async run(criv, { m, text }) {
+
+  async run(criv, { m, text }) {
     if (!text) text = 'hai'
+
     try {
-      const url = 'https://api.siputzx.my.id/api/ai/perplexity'
-      const { data } = await axios.get(url, { 
-        params: { text, model: 'sonar-pro' } 
+      const res = await axios.get('https://api.siputzx.my.id/api/ai/perplexity', {
+        params: { 
+          text, 
+          model: 'sonar-pro' 
+        }
       })
-     
-      const res = data?.data?.output || data?.output || 'Tidak ada respon dari AI'
-        await criv.sendMessage(m.chat, {
-        text: res,
+
+      const ans = res.data?.data?.output || res.data?.output || 'Tidak ada respon dari AI'
+
+      await criv.sendMessage(m.chat, {
+        text: ans,
         contextInfo: {
           externalAdReply: {
             showAdAttribution: false,
-            title: "Perplexity",
+            title: 'Perplexity',
             thumbnailUrl: 'https://pomf2.lain.la/f/bmb8jibr.jpg',
             mediaType: 1,
             renderLargerThumbnail: true
@@ -45,8 +51,9 @@ owner: false,
           }
         }
       })
-    } catch (e) {
-      console.error('Error Perplexity:', e?.response?.data || e.message)
+
+    } catch (err) {
+      console.error('Perplexity Error:', err?.response?.data || err.message)
       m.reply('❌ Terjadi kesalahan saat memproses permintaan.')
     }
   }

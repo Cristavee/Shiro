@@ -1,40 +1,42 @@
 import axios from 'axios';
-  export default {
+
+export default {
   command: ['tweet', 'x'],
   tag: 'utility',
-owner: false,
+  owner: false,
   admin: false,
   botAdmin: false,
   public: true,
   premium: false,
   coin: 10,
   cooldown: 5000,
-    async run(criv, { m, text }) {
-    if (!text) {
-      return m.reply('Gunakan format: .tweet <teks tweet> | <nama> | <username> | <URL foto profil> | <retweets> | <quotes> | <likes> | <klien>\n\nContoh: .tweet Halo Dunia | John Doe | johndoe | https://example.com/profile.jpg | 100 | 50 | 200 | Twitter for Android');
-    }
-      const args = text.split('|').map(arg => arg.trim());
-    
+
+  async run(criv, { m, text }) {
+    if (!text) return m.reply('Gunakan format: .tweet <teks tweet> | <nama>\nContoh: .tweet Halo Dunia | John Doe');
+
+    const args = text.split('|').map(arg => arg.trim());
     const tweetText = args[0] || '';
     const name = args[1] || 'CRISTAVEE';
-    const username = args[2] || 'cristavee';
-    const profileUrl = args[3] || 'https://avatars.githubusercontent.com/u/159487561?v=4';
-    const retweets = args[4] ? parseInt(args[4]) : 1000;
-    const quotes = args[5] ? parseInt(args[5]) : 200;
-    const likes = args[6] ? parseInt(args[6]) : 5000;
-    const client = args[7] || 'Twitter for iPhone';
+
+    // Random data
+    const username = name.toLowerCase() + '_'
+    const profileUrl = `https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png`;
+    const retweets = Math.floor(Math.random() * 50000);
+    const quotes = Math.floor(Math.random() * 10000);
+    const likes = Math.floor(Math.random() * 100000);
+    const clientOptions = ['Twitter for iPhone', 'Twitter for Android', 'Twitter Web App'];
+    const client = clientOptions[Math.floor(Math.random() * clientOptions.length)];
     const theme = 'dark';
-      const validProfileUrl = (profileUrl.startsWith('http://') || profileUrl.startsWith('https://')) ? profileUrl : 'https://avatars.githubusercontent.com/u/159487561?v=4';
-      try {
-      const apiUrl = `https://api.siputzx.my.id/api/m/tweet?profile=${encodeURIComponent(validProfileUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&tweet=${encodeURIComponent(tweetText)}&image=null&theme=${encodeURIComponent(theme)}&retweets=${retweets}&quotes=${quotes}&likes=${likes}&client=${encodeURIComponent(client)}`;
+
+    try {
+      const apiUrl = `https://api.siputzx.my.id/api/m/tweet?profile=${encodeURIComponent(profileUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&tweet=${encodeURIComponent(tweetText)}&image=null&theme=${encodeURIComponent(theme)}&retweets=${retweets}&quotes=${quotes}&likes=${likes}&client=${encodeURIComponent(client)}`;
       
       await criv.sendMessage(m.chat, {
-        image: { url: apiUrl },
-        caption: `> Tweet palsu Anda berhasil dibuat!`
-      }, { quoted: m });
-      } catch (err) {
+        image: { url: apiUrl }
+      });
+    } catch (err) {
       console.error(err);
-      m.reply('Terjadi kesalahan saat membuat tweet palsu. Pastikan format dan URL yang Anda masukkan benar.');
+      m.reply('Terjadi kesalahan saat membuat tweet palsu.');
     }
   }
 };

@@ -1,53 +1,59 @@
 import fs from 'fs'
 import path from 'path'
 import { spawn } from 'child_process'
-  export default {
+
+export default {
   command: ['stiker', 'sticker', 's'],
   tag: 'utility',
-coin: 10,
-    async run(criv, { m }) {
+  coin: 10,
+  async run(criv, { m }) {
+    // Ambil media dari reply atau kirim langsung
     const media = m.quoted?.isMedia ? m.quoted : (m.isMedia ? m : null)
-    if (!media) return m.reply('Balas atau kirim gambar/video dengan caption:\n.stiker')
-      const type = media.mediaType || media.mtype || ''
-    if (!['imageMessage', 'videoMessage'].includes(type)) {
-      return m.reply('Hanya mendukung gambar atau video.')
+    if (!media) return m.reply('Balas atau kirim gambar/video/stiker dengan caption: .stiker')
+
+    const type = media.mediaType || media.mtype || ''
+    if (!['imageMessage', 'videoMessage', 'stickerMessage'].includes(type)) {
+      return m.reply('Hanya mendukung gambar, video, atau stiker.')
     }
+
+    try {
       const buffer = await media.download?.()
-    if (!buffer) return m.reply('> Gagal mengunduh media.')
-      const tmpFile = path.join('./tmp', `${Date.now()}_${type === 'videoMessage' ? 'video' : 'image'}`)
-    fs.writeFileSync(tmpFile, buffer)
-      try {
-      let stickerBuffer
-        if (type === 'imageMessage') {
-        stickerBuffer = buffer
-      } else if (type === 'videoMessage') {
-        const tmpSticker = tmpFile + '.webp'
-          await new Promise((resolve, reject) => {
+      if (!buffer) return m.reply('❌ Gagal mengunduh media.')
+
+      let stickerBuffer = buffer
+
+      // Jika video atau GIF, ubah ke webp animasi
+      if (type === 'videoMessage') {
+        const tmpFile = path.join('./tmp', `video_${Date.now()}.mp4`)
+        const tmpSticker = path.join('./tmp', `sticker_${Date.now()}.webp`)
+        fs.writeFileSync(tmpFile, buffer)
+
+        await new Promise((resolve, reject) => {
           const ff = spawn('ffmpeg', [
             '-i', tmpFile,
             '-vf', 'scale=512:512:flags=lanczos:force_original_aspect_ratio=decrease,fps=15',
-            '-t', '3',
+            '-t', '6',
             '-loop', '0',
-            '-ss', '0',
             '-an',
             '-f', 'webp',
             tmpSticker
           ])
-            ff.on('close', code => code === 0 ? resolve() : reject(new Error('FFmpeg error')))
+          ff.on('close', code => code === 0 ? resolve() : reject(new Error('FFmpeg error')))
         })
-          stickerBuffer = fs.readFileSync(tmpSticker)
+
+        stickerBuffer = fs.readFileSync(tmpSticker)
+        fs.unlinkSync(tmpFile)
         fs.unlinkSync(tmpSticker)
       }
-        await criv.sendAsSticker(m.chat, stickerBuffer, {
+
+      await criv.sendAsSticker(m.chat, stickerBuffer, {
         quoted: m,
-        packname: global.pack,
-        author: global.author
+        packname: global.pack || global.bot.name,
+        author: global.author || global.bot.ownerName
       })
-    } catch (e) {
-      console.error(e)
-      m.reply('Gagal membuat stiker.')
-    } finally {
-      fs.unlinkSync(tmpFile)
+    } catch (err) {
+      console.error(err)
+      m.reply('❌ Gagal membuat stiker.')
     }
   }
 }

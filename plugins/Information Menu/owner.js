@@ -1,8 +1,7 @@
-import system from '../../lib/system.js'
-  export default {
+export default {
   command: ['owner', 'dev', 'developer'],
   tag: 'information',
-owner: false,
+  owner: false,
   admin: false,
   botAdmin: false,
   public: true,

@@ -1,8 +1,10 @@
 import { stopUserGame } from '../../lib/game.js'
+
   export default {
   command: ['skip', 'stop'],
   tag: '',
-public: true,
+  public: true,
+      
     async run(criv, { m, sender }) {
     const success = stopUserGame(sender)
     if (success) {

@@ -1,4 +1,4 @@
-import * as baileys from 'baileys'
+import * as baileys from 'baileys-x'
 import chalk from 'chalk'
 import pino from 'pino'
 import readline from 'readline'
@@ -55,10 +55,10 @@ async function begin() {
   
   if (!criv.authState.creds.registered) {
   if (global.usePairingCode) {
-    console.log(chalk.green('Enter your WhatsApp number below: '))
-    const phoneNumber = await question('Number : ')
+    console.log(chalk.green('Masukan nomor WhatsApp anda dibawah ini: '))
+    const phoneNumber = await question('Nomor : ')
     const pairCode = await criv.requestPairingCode(phoneNumber, global.cuspair)
-    console.log(chalk.green(`Your Pairing Code: ${pairCode}`))
+    console.log(chalk.green(`Kode Pairing Anda: ${pairCode}`))
   }
 }
     
@@ -66,24 +66,24 @@ async function begin() {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr && !global.usePairingCode && !criv.authState.creds.registered) {
-  console.log(chalk.yellow('📌 QR Code available! Please scan it from your WhatsApp.'))
+  console.log(chalk.yellow('📌 QR Code tersedia! Silakan scan dari WhatsApp Anda.'))
   qrcode.generate(qr, { small: true }) 
 }
 
     if (connection === 'open') {
-      console.log(chalk.bgGray('Successfully Connected!'))
+      console.log(chalk.bgGray('Connected Successfully!'))
       criv.ev.on('messages.upsert', handleMessageEvents.bind(null, criv))
 
     } else if (connection === 'close') {
       const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
 
       if (reason === DisconnectReason.badSession) {  
-        console.log(chalk.red('Invalid session. Delete the session folder and restart.'))
+        console.log(chalk.red('Sesi tidak valid. Hapus folder session lalu jalankan ulang.'))
         fs.rmSync(path.resolve(__dirname, 'session'), { recursive: true, force: true })  
         process.exit(1)  
 
       } else if (reason === DisconnectReason.loggedOut) {  
-        console.log(chalk.red('Logged out. Delete the session folder and restart.'))
+        console.log(chalk.red('Logged out. Hapus folder session lalu jalankan ulang.'))
         fs.rmSync(path.resolve(__dirname, 'session'), { recursive: true, force: true })  
         process.exit(1)  
 
@@ -92,13 +92,13 @@ async function begin() {
         reason === DisconnectReason.connectionClosed ||
         reason === DisconnectReason.connectionLost
       ) {
-        console.log(chalk.yellow('Connection lost. Retrying...'))
+        console.log(chalk.yellow('Koneksi terputus. Mencoba ulang...'))
         begin()
 
       } else if (reason === DisconnectReason.connectionReplaced) {
-        console.log(chalk.yellow('Connection replaced by a new session. The bot remains active.'))
+        console.log(chalk.yellow('Koneksi diganti oleh sesi baru. Bot tetap berjalan.'))
       } else {  
-        console.log(chalk.yellow(`Connection lost (${reason}). Retrying...`))  
+        console.log(chalk.yellow(`Koneksi terputus (${reason}). Mencoba ulang...`))  
         begin()  
       }  
     }
@@ -106,9 +106,11 @@ async function begin() {
 
   criv.ev.on('creds.update', saveCreds)
 
-  criv.public = true // Allow Everyone To Use
-  criv.private = false // Private Only
-  criv.lang = 'Indonesia' // Default Language
+  criv.public = true
+  criv.private = false
+  criv.resMe = false
+  criv.lang = 'indonesia'
+    
   return criv
 }
 

@@ -1,7 +1,7 @@
 export default {
   command: ['setbio'],
   tag: 'main',
-owner: false,
+  owner: false,
   admin: false,
   botAdmin: false,
   public: true,
@@ -15,7 +15,9 @@ owner: false,
     text,
     pushName
   }) {
+        
     if (!text) return m.reply('Kirim bio baru kamu!\nContoh: .setbio Aku adalah pengguna setia bot ini.')
+        
       await system.setBio(sender, text)
       m.reply(`> Bio kamu berhasil diatur:\n${text}`)
   }

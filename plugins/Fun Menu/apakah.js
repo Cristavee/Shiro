@@ -1,17 +1,19 @@
 export default {
-  command: ['apakah'], 
+  command: ['apakah'],
   tag: 'fun',
-owner: false,
-  admin: false, 
-  botAdmin: false, 
-  public: true, 
+  owner: false,
+  admin: false,
+  botAdmin: false,
+  public: true,
   group: false,
   premium: false,
   coin: 3,
   cooldown: 5000,
-    async run(criv, { m, text, pushName }) {
+
+  async run(criv, { m, text, pushName }) {
     if (!text) return m.reply(msg.query)
-      const jawaban = [
+
+    const list = [
       'Oh jelas.',
       'Mungkin ya.',
       'Pasti',
@@ -23,12 +25,15 @@ owner: false,
       'Tidak.',
       'Mustahil.'
     ]
-      const hasil = await criv.pickRandom(jawaban)
-      const hasilText = `
-Pertanyaan: ${text}
-Penanya   : ${pushName}
-Jawaban   : ${hasil}
+
+    const jawab = await criv.pickRandom(list)
+
+    const hasil = `
+> *Pertanyaan:* ${text}
+> *Penanya:* ${pushName}
+> *Jawaban:* ${jawab}
     `.trim()
-      await m.reply(hasilText)
+
+    await m.reply(hasil)
   }
 }

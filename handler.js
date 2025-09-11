@@ -1,7 +1,6 @@
 /*
-* by Cristave 
-* Indonesian
-* Since 2025
+* by Cristave 2025
+* Indonesia
 */
 
 import fs from 'fs'
@@ -30,7 +29,6 @@ const SPAM_INTERVAL = 5000
 const gamePlugins = {};
 const activeGameTimeouts = {}
 const lastActivity = new Map()
-
 const ERROR_LOG_FILE = path.resolve(__dirname, './error.log') 
 
 if (!global.processedMessageIds) global.processedMessageIds = new Set()
@@ -70,7 +68,7 @@ function logErrorToFile(error) {
   const timestamp = new Date().toISOString()
   const errorMessage = `[${timestamp}] ${error.stack || error.message}\n\n\n`
   fs.appendFileSync(ERROR_LOG_FILE, errorMessage, 'utf8')
-  console.error(chalk.red(`Error recorded to ${ERROR_LOG_FILE}`));
+  console.error(chalk.red(`Error logged to ${ERROR_LOG_FILE}`));
 }
 
 function updateLastActivity(senderId) {
@@ -113,7 +111,7 @@ async function loadPlugin(filePath) {
               console.log(chalk.hex('#B2F2BB')(`Plugin: ${path.basename(filePath)}  - `) + chalk.gray(`command: [ ${plugin.command.join(' - ')} ]`));
               return true;
           } else {
-              console.warn(`! Plugin '${path.basename(filePath)}' skipped: 'command' property is not present or not an array.`);
+              console.warn(`! Plugin '${path.basename(filePath)}' skipped: No 'command' property or it is not an array.`);
               return false;
           }
       } catch (e) {
@@ -153,9 +151,9 @@ async function loadAllPlugins() {
             }
         }
         global.totalFeature = totalLoaded;
-        console.log(chalk.green(`All plugins loaded. Total features: ${totalLoaded}`));
+        console.log(chalk.green(`All plugins finished loading. Total features: ${totalLoaded}`));
     } catch (dirError) {
-        console.error(chalk.red(`Failed to read plugins directory '${pluginsDir}':`), dirError);
+        console.error(chalk.red(`Failed to read plugin directory '${pluginsDir}':`), dirError);
         logErrorToFile(dirError);
     }
 }
@@ -173,7 +171,7 @@ function checkAccess(plugin, { isGroup, isAdmin, isBotAdmin, isOwner, sender, sy
     coin: plugin.coin || 0
   }
 
-  // ✅ Check banned
+  // ✅ Check banned status
   if (system.isUserBanned(sender)) return global.msg.banned
 
   // ✅ Owner only
@@ -201,7 +199,7 @@ function checkAccess(plugin, { isGroup, isAdmin, isBotAdmin, isOwner, sender, sy
   // ✅ Warn limit 
   if (system.getWarn(sender) >= 3) return global.msg.warn
 
-  // ✅ All passed
+  // ✅ All checks passed
   return null
 }
 
@@ -229,7 +227,7 @@ chokidar.watch(pluginsDir, { ignored: /(^|[\/\\])\../, persistent: true, ignoreI
             if (loaded) {
                 console.log(chalk.green('Reloaded:'), path.basename(absolutePath));
             } else {
-                console.warn(chalk.yellow(`⚠️ No command in ${path.basename(absolutePath)} during reload or there was an error.`));
+                console.warn(chalk.yellow(`⚠️ No command in ${path.basename(absolutePath)} on reload or an error occurred.`));
             }
         } else {
             loadAllPlugins(); 
@@ -268,6 +266,7 @@ chokidar.watch(pluginsDir, { ignored: /(^|[\/\\])\../, persistent: true, ignoreI
             loadAllPlugins();
         }
     });
+
 async function cleanupExpiredGames() {
   if (!system.db) return
   if (!system.db.data) system.db.data = { games: {} }
@@ -306,7 +305,6 @@ async function cleanupExpiredGames() {
 }
 
 setInterval(cleanupExpiredGames, 60 * 1000);
-
 
 const groupMetaCache = new Map();
 async function getGroupMeta(chatId) {
@@ -361,8 +359,6 @@ export default (criv) => {
     participant: context.participant,
   },
 
- 
-
 mimetype: Object.values(context.quotedMessage)?.[0]?.mimetype || getMediaType(context.quotedMessage),
 mediaType: Object.keys(context.quotedMessage)[0],
 isSticker: !!context.quotedMessage.stickerMessage,
@@ -415,11 +411,8 @@ if (!m.quoted && m.message) {
   }
 }
 
-
         const isGame = await handleReplyGame(m)
          if (isGame) return
-
-
 
       let body =
   m.text?.toLowerCase() ||
@@ -464,14 +457,14 @@ if (!body && m.quoted?.message) {
     case 'extendedTextMessage': body = m.quoted.message.extendedTextMessage?.text || ''; break
     case 'imageMessage': body = m.quoted.message.imageMessage?.caption || ''; break
     case 'videoMessage': body = m.quoted.message.videoMessage?.caption || ''; break
-    case 'stickerMessage': body = '[Replied Sticker]'; break
-    case 'audioMessage': body = '[Replied Audio]'; break
-    case 'documentMessage': body = '[Replied Document]'; break
-    case 'locationMessage': body = '[Replied Location]'; break
-    case 'contactMessage': body = '[Replied Contact]'; break
-    case 'buttonsResponseMessage': body = m.quoted.message.buttonsResponseMessage?.selectedButtonId || '[Replied Button]'; break
-    case 'templateButtonReplyMessage': body = m.quoted.message.templateButtonReplyMessage?.selectedId || '[Replied Template Button]'; break
-    case 'listResponseMessage': body = m.quoted.message.listResponseMessage?.singleSelectReply?.selectedRowId || '[Replied List]'; break
+    case 'stickerMessage': body = '[Sticker Replied]'; break
+    case 'audioMessage': body = '[Audio Replied]'; break
+    case 'documentMessage': body = '[Document Replied]'; break
+    case 'locationMessage': body = '[Location Replied]'; break
+    case 'contactMessage': body = '[Contact Replied]'; break
+    case 'buttonsResponseMessage': body = m.quoted.message.buttonsResponseMessage?.selectedButtonId || '[Button Replied]'; break
+    case 'templateButtonReplyMessage': body = m.quoted.message.templateButtonReplyMessage?.selectedId || '[Template Button Replied]'; break
+    case 'listResponseMessage': body = m.quoted.message.listResponseMessage?.singleSelectReply?.selectedRowId || '[List Replied]'; break
     default: break
   }
 }
@@ -488,18 +481,18 @@ if (!body && m.quoted?.message) {
       
       const from = m.key.remoteJid || '';
       const rawSender = m.key.participant || m.participant || m.key.remoteJid || '';
-      const sender = m.key.fromMe ? criv.user?.id || '' : rawSender;
-
-      const isGroup = from.endsWith('@g.us')
-      const owners = [criv.user?.id, ...(global.owner || [])]
-  .filter(Boolean) || global.bot.owner
-  .map(jid => helpers.decodeJid(jid))
-      const isOwner = owners.includes(helpers.decodeJid(sender))
+      const sender = m.key.fromMe ? criv.user?.id.split(':')[0] || '' : rawSender;
       const pushName = m.pushName 
+      const isGroup = from.endsWith('@g.us')
+const owners = [criv.user?.id, ...(global.owner || [])]
+.filter(Boolean) || global.bot.owner
+.map(jid => helpers.decodeJid(jid))
+const isOwner = db.data.owner.includes(sender.split('@')[0])
       const rawJid = m.sender || m.key?.participant || m.key?.remoteJid || ''
-await system.addUser(rawJid, m.pushName)
-            
+      await system.addUser(rawJid, m.pushName)
+       
       global.system = system
+      if (!db.data.owner.includes(global.owner)) await system.addOwner(global.bot.owner)
        
       const target = helpers.getTarget(m, args)
       const amount = helpers.parseAmount(args)
@@ -507,6 +500,7 @@ await system.addUser(rawJid, m.pushName)
       const decoded = rawJid ? helpers.safeJidDecode(rawJid) : null
       const user = decoded?.user || rawJid.split('@')[0] || 'unknown_user'
       const readMore = '\u200b'.repeat(5000)
+      if (num === criv.user.id.split(':'[0])) return
       const getName = async (jid) => {
         try {
           if (typeof criv.getName === 'function') {
@@ -526,7 +520,6 @@ await system.addUser(rawJid, m.pushName)
       const mentionedJids = Array.isArray(m.message?.extendedTextMessage?.contextInfo?.mentionedJid) ? m.message.extendedTextMessage.contextInfo.mentionedJid : [];
         
       
-
       const fakeQuote = {
         key: { remoteJid: 'status@broadcast', participant: '0@s.whatsapp.net' },
         message: { extendedTextMessage: { text: global.bot.name } }
@@ -556,7 +549,6 @@ await system.addUser(rawJid, m.pushName)
       const isBlocked = system.isUserBanned(sender)
       const isBotAdmin = groupAdmins.includes(botNumber)
       const isAdmin = groupAdmins.includes(sender)
-      const isWelcome = global.welcome;
       const quoted = m.quoted
      global.sender = sender 
       const currentTime = new Date();
@@ -565,8 +557,15 @@ await system.addUser(rawJid, m.pushName)
       const formattedTime = currentTime.toLocaleTimeString('id-ID', { hour12: false });
       const formattedDate = currentTime.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       Object.assign(m, {
+        botNumber: botNumber,
+        system: system,
+        isBot: isBot,
         prefix: global.prefix[0] || '.',
         chat: from,
+        target: target,
+        amount: amount,
+        mention: mentioned,
+        from: from,
         sender: num,
         rawSender: sender,
         pushName: pushName,
@@ -574,6 +573,8 @@ await system.addUser(rawJid, m.pushName)
         args: args,
         command: command,
         text: text,
+        readMore: readMore,
+        user: user,
         isReply: !!m.quoted,
         isMention: mentionedJids.length > 0,
         mentionedJids: mentionedJids,
@@ -619,7 +620,7 @@ await system.addUser(rawJid, m.pushName)
 
 
       if (system.isUserBanned(num)) return
-      if (sender === botNumber) return
+      if (criv.resMe && sender == botNumber) return
       if (!criv.public && !isOwner) return
       if (criv.private && from.endsWith('@g.us')) return
       if (isGroup && !isOwner && system.isMuted(m.chat)) return 
@@ -697,7 +698,7 @@ await system.addUser(rawJid, m.pushName)
         }
       }
     } catch (err) {
-      console.error('[CONFESS][ERROR] failed to forward message', { sid, err })
+      console.error('[MENFESS][ERROR] failed to forward message', { sid, err })
     }
   }
 }   
@@ -813,7 +814,6 @@ if (failReason) {
   return
 }
 
-
         const isStickerCommand = ['stiker', 'sticker', 's'].includes(command);
         const isMediaMessage = ['imageMessage', 'videoMessage'].includes(mtype);
 
@@ -870,7 +870,7 @@ if (failReason) {
       }
 await criv.sendPresenceUpdate('paused', m.chat)
         
-if (isOwner) {
+if (m.isOwner) {
   const lowerBody = body.trim().toLowerCase()
   
   if (lowerBody.startsWith('>')) {
@@ -881,9 +881,7 @@ if (isOwner) {
       const wrappedCode = commandInput.includes('return')
         ? `(async () => { ${commandInput} })()`
         : `(async () => { return ${commandInput} })()`
-
       let evalResult = await eval(wrappedCode)
-
       if (typeof evalResult !== 'string') {
         evalResult = util.inspect(evalResult)
       }
@@ -959,3 +957,5 @@ logCommand({
     }
   })
 }
+
+

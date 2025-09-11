@@ -1,4 +1,5 @@
 import { generateWAMessageFromContent, proto } from 'baileys-x'
+
   export default {
   command: ['tes', 't'],
   tag: 'dev',

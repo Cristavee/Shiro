@@ -1,7 +1,7 @@
 export default {
   command: ['hidetag', 'ht'],
   tag: 'group',
-group: true,
+  group: true,
   admin: true,
   botAdmin: false,
   coin: 15,

@@ -112,6 +112,6 @@ global.sis = sistem
 > ©\t: Coin
 > ⓕ\t: Free
 
-▫️ ${global.bot.name} is a multifunctional WhatsApp assistant designed to help with chatting, downloading media, playing fun games, managing groups, and providing useful tools,while also supporting premium features for advanced users.`
+️ ${global.bot.name} is a multifunctional WhatsApp assistant designed to help with chatting, downloading media, playing fun games, managing groups, and providing useful tools,while also supporting premium features for advanced users.`
   )
 }

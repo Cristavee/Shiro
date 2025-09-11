@@ -1,7 +1,7 @@
 export default {
   command: ['neko'], 
   tag: 'nsfw',
-owner: false,
+  owner: false,
   admin: false, 
   botAdmin: false, 
   public: true, 

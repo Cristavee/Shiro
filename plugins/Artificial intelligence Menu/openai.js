@@ -1,26 +1,32 @@
 import axios from 'axios'
-  export default {
+
+export default {
   command: ['openai'],
   tag: 'ai',
-owner: false,
+  owner: false,
   admin: false,
   botAdmin: false,
   public: true,
   premium: false,
   coin: 5,
   cooldown: 3000,
-    async run(criv, { m, text }) {
+
+  async run(criv, { m, text }) {
     if (!text) return m.reply(global.msg.query)
-      try {
+
+    try {
       const res = await axios.get('https://www.veloria.my.id/ai/openai', {
         params: { text },
         headers: { 'User-Agent': 'okhttp/5.0' }
       })
-        const data = res?.data
-      if (!data?.status || !data?.result) return m.reply(global.msg.error)
-        m.reply(data.result)
+
+      const ans = res.data
+      if (!ans?.status || !ans?.result) return m.reply(global.msg.error)
+
+      await m.reply(ans.result)
+
     } catch (err) {
-      console.error(err)
+      console.error('OpenAI Error:', err?.response?.data || err.message)
       m.reply(global.msg.error)
     }
   }

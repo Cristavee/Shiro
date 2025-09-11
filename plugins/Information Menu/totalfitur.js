@@ -1,43 +1,52 @@
 export default {
-  command: ['totalfitur', 'total', 'fitur'], 
+  command: ['totalfitur', 'total', 'fitur'],
   tag: 'information',
-owner: false,
-  admin: false, 
-  botAdmin: false, 
-  public: true, 
-  group: false, 
+  owner: false,
+  admin: false,
+  botAdmin: false,
+  public: true,
+  group: false,
   premium: false,
   coin: 10,
   cooldown: 5000,
-    async run(criv, { system,  m,  body,  from,  args,  command,  sender,  pushName }) {
- await criv.sendMessage(m.chat, {
-  ai: true,
-  text: `*Total Fitur*\n> ${global.totalFeature}`,
-  contextInfo: {
-    externalAdReply: {
-      showAdAttribution: false,
-      title: "Fitur",
-      body: "© Cristave 2025",
-      thumbnailUrl: global.thumb,
-      sourceUrl: "https://github.com/Cristavee",
-      mediaType: 1,
-      renderLargerThumbnail: true
-    },
-    isForwarded: true
-  },
-  ephemeralExpiration: 8640,
-  footer: global.footer
-}, {
-  quoted: {
-    key: {
-      remoteJid: '0@s.whatsapp.net',
-      fromMe: false,
-      id: 'BAE5F1E87A7CABA5F74A3213DE6B1C9B'
-    },
-    message: {
-      conversation: `HAI ${m.pushName} 👋`
+
+  async run(criv, { m, pushName }) {
+    try {
+      await criv.sendMessage(
+        m.chat,
+        {
+          text: `*Total Fitur*\n> ${global.totalFeature}`,
+          contextInfo: {
+            externalAdReply: {
+              showAdAttribution: false,
+              title: "Fitur",
+              body: "© Cristave 2025",
+              thumbnailUrl: global.thumb,
+              sourceUrl: "https://github.com/Cristavee",
+              mediaType: 1,
+              renderLargerThumbnail: false
+            },
+            isForwarded: true
+          },
+          ephemeralExpiration: 8640,
+          footer: global.footer
+        },
+        {
+          quoted: {
+            key: {
+              remoteJid: '0@s.whatsapp.net',
+              fromMe: false,
+              id: 'BAE5F1E87A7CABA5F74A3213DE6B1C9B'
+            },
+            message: {
+              conversation: `HAI ${pushName || 'Pengguna'} 👋`
+            }
+          }
+        }
+      );
+    } catch (err) {
+      console.error('Error totalfitur:', err);
+      await m.reply('❌ Gagal menampilkan total fitur.');
     }
   }
-})
-  }
-}
+};

@@ -1,21 +1,34 @@
 import fs from 'fs'
 import path from 'path'
-  export default {
+
+export default {
   command: ['listfile'],
   tag: 'dev',
-owner: true,
-    async run(criv, { m }) {
-    const dir = './plugins'
+  owner: true,
+
+  async run(criv, { m }) {
+    const baseDir = './plugins'
     const files = []
-      function scan(dirPath) {
-      const items = fs.readdirSync(dirPath)
+
+    function scan(dir) {
+      const items = fs.readdirSync(dir)
       for (const item of items) {
-        const fullPath = path.join(dirPath, item)
-        if (fs.statSync(fullPath).isDirectory()) scan(fullPath)
-        else if (fullPath.endsWith('.js')) files.push(fullPath)
+        const fullPath = path.join(dir, item)
+        if (fs.statSync(fullPath).isDirectory()) {
+          scan(fullPath)
+        } else if (fullPath.endsWith('.js')) {
+          files.push(fullPath.replace(baseDir + '/', ''))
+        }
       }
     }
-      scan(dir)
-      m.reply('Plugin Files:\n\n' + files.map(f => '- ' + f.replace('./plugins/', '')).join('\n'))
+
+    scan(baseDir)
+
+    if (files.length === 0) {
+      return m.reply('Tidak ada file plugin ditemukan.')
+    }
+
+    const list = files.map(f => `• ${f}`).join('\n')
+    m.reply(`*Daftar Plugin (${files.length}):*\n\n${list}`)
   }
 }
