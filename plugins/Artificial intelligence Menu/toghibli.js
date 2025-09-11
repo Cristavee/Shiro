@@ -1,10 +1,10 @@
 import axios from 'axios'
 import FormData from 'form-data'
 
-const OPENAI_KEY = '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'
+const OPENAI_KEY = 'YOUR_APIKEY'
 
 async function editImage(buffer, prompt) {
-  const url = 'https://api.openai.com/v1/images/edits'
+  const apiUrl = 'https://api.openai.com/v1/images/edits'
   const form = new FormData()
   form.append('image', buffer, { filename: 'image.png' })
   form.append('prompt', prompt)
@@ -13,48 +13,47 @@ async function editImage(buffer, prompt) {
   form.append('size', '1024x1024')
   form.append('quality', 'medium')
 
-  const res = await axios.post(url, form, {
+  const response = await axios.post(apiUrl, form, {
     headers: {
       ...form.getHeaders(),
       Authorization: `Bearer ${OPENAI_KEY}`
     }
   })
 
-  const data = res.data
-  if (!data?.data?.[0]?.b64_json) throw new Error('Gagal mendapatkan gambar')
-  return Buffer.from(data.data[0].b64_json, 'base64')
+  const result = response.data
+  if (!result?.data?.[0]?.b64_json) throw new Error('Gagal mendapatkan gambar')
+  return Buffer.from(result.data[0].b64_json, 'base64')
 }
 
 export default {
   command: ['imagedit', 'toghibli', 'ghibli'],
   tag: 'ai',
+  description: 'Edit gambar dengan prompt atau ubah ke style Studio Ghibli',
 
   async run(criv, { m, text, command }) {
-    const quoted = m.quoted?.isMedia ? m.quoted : (m.isMedia ? m : null)
-    if (!quoted || !/image/.test(quoted.mimetype)) {
-      if (command === 'imagedit') return m.reply('Reply gambar dengan perintah: .imagedit <prompt>')
-      if (command === 'toghibli' || command === 'ghibli') return m.reply('Reply gambar dengan perintah: .' + command)
-      return
+    if (OPENAI_KEY == 'YOUR_APIKEY') return m.reply("You didn't set the Apikey yet, get one in https://aistudio.google.com/app/u/5/apikey")
+    if (!m.quoted || !/image/.test(m.quoted.mimetype)) {
+      if (command === 'imagedit') return m.reply(`❌ Reply gambar dengan perintah: .imagedit <prompt>`)
+      if (command === 'toghibli') return m.reply(`❌ Reply gambar dengan perintah: .toghibli`)
     }
 
     try {
-      const buffer = await quoted.download()
+      const buffer = await m.quoted.download()
       let prompt
 
-      if (command === 'toghibli' || command === 'ghibli') {
+      if (command === 'toghibli' || 'ghibli') {
         prompt = 'Convert this image into Studio Ghibli art style'
       } else if (command === 'imagedit') {
-        if (!text) return m.reply('Contoh: .imagedit ubah jadi kartun lucu')
+        if (!text) return m.reply(`❌ Contoh: .imagedit ubah jadi kartun lucu`)
         prompt = text
       }
 
       const result = await editImage(buffer, prompt)
-      await criv.sendFile(m.chat, result, 'edit.png', `Selesai: ${prompt}`, m, false, {
-        mimetype: 'image/png'
-      })
+      await criv.sendFile(m.chat, result, 'edit.png', `✅ Selesai: ${prompt}`, m, false, { mimetype: 'image/png' })
+
     } catch (err) {
       console.error('Image Edit Error:', err)
-      m.reply('Terjadi kesalahan: ' + err.message)
+      m.reply(`❌ Terjadi kesalahan: ${err.message}`)
     }
   }
 }
