@@ -27,11 +27,12 @@ const rl = readline.createInterface({
 
 function question(text) {
   return new Promise(resolve => {
-    process.stdout.write(chalk.blueBright(text))
+    process.stdout.write(chalk.blueBright(text) + ' ')
     rl.question('', answer => resolve(answer))
   })
 }
 
+// ===== Main function =====
 async function begin() {
   const { state, saveCreds } = await useMultiFileAuthState('./session')
   EventEmitter.defaultMaxListeners = 500 
@@ -50,25 +51,25 @@ async function begin() {
   })
 
   store.bind(criv.ev)
-
   extendHelper(criv)
   
+  // ===== Pairing code prompt =====
   if (!criv.authState.creds.registered) {
-  if (global.usePairingCode) {
-    console.log(chalk.green('Masukan nomor WhatsApp anda dibawah ini: '))
-    const phoneNumber = await question('Nomor : ')
-    const pairCode = await criv.requestPairingCode(phoneNumber, global.cuspair)
-    console.log(chalk.green(`Kode Pairing Anda: ${pairCode}`))
+    if (global.usePairingCode) {
+      const phoneNumber = await question('Enter your WhatsApp number: ')
+      const pairCode = await criv.requestPairingCode(phoneNumber, global.cuspair)
+      console.log(chalk.green(`Your Pairing Code: ${pairCode}`))
+    }
   }
-}
     
+  // ===== Connection update handler =====
   criv.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr && !global.usePairingCode && !criv.authState.creds.registered) {
-  console.log(chalk.yellow('📌 QR Code tersedia! Silakan scan dari WhatsApp Anda.'))
-  qrcode.generate(qr, { small: true }) 
-}
+      console.log(chalk.yellow('📌 QR Code is available! Please scan it from your WhatsApp.'))
+      qrcode.generate(qr, { small: true }) 
+    }
 
     if (connection === 'open') {
       console.log(chalk.bgGray('Connected Successfully!'))
@@ -78,12 +79,12 @@ async function begin() {
       const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
 
       if (reason === DisconnectReason.badSession) {  
-        console.log(chalk.red('Sesi tidak valid. Hapus folder session lalu jalankan ulang.'))
+        console.log(chalk.red('Invalid session. Delete the session folder and restart.'))
         fs.rmSync(path.resolve(__dirname, 'session'), { recursive: true, force: true })  
         process.exit(1)  
 
       } else if (reason === DisconnectReason.loggedOut) {  
-        console.log(chalk.red('Logged out. Hapus folder session lalu jalankan ulang.'))
+        console.log(chalk.red('Logged out. Delete the session folder and restart.'))
         fs.rmSync(path.resolve(__dirname, 'session'), { recursive: true, force: true })  
         process.exit(1)  
 
@@ -92,13 +93,13 @@ async function begin() {
         reason === DisconnectReason.connectionClosed ||
         reason === DisconnectReason.connectionLost
       ) {
-        console.log(chalk.yellow('Koneksi terputus. Mencoba ulang...'))
+        console.log(chalk.yellow('Connection lost. Retrying...'))
         begin()
 
       } else if (reason === DisconnectReason.connectionReplaced) {
-        console.log(chalk.yellow('Koneksi diganti oleh sesi baru. Bot tetap berjalan.'))
+        console.log(chalk.yellow('Connection replaced by a new session. Bot keeps running.'))
       } else {  
-        console.log(chalk.yellow(`Koneksi terputus (${reason}). Mencoba ulang...`))  
+        console.log(chalk.yellow(`Connection disconnected (${reason}). Retrying...`))  
         begin()  
       }  
     }
@@ -106,12 +107,12 @@ async function begin() {
 
   criv.ev.on('creds.update', saveCreds)
 
-  criv.public = true
-  criv.private = false
-  criv.resMe = false
-  criv.lang = 'indonesia'
+  criv.public = true // ALLOW EVERYONE TO USE 
+  criv.private = false // PERSONAL CHAT ONLY
+  criv.resMe = false // BOT RESPONSE ITSELF 
+  criv.lang = 'indonesia' // DEFAULT LANG FOR SOME FEATURE 
     
   return criv
 }
 
-begin()
+begin() 

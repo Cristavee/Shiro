@@ -31,7 +31,7 @@ export default {
             title: 'DeepSeek',
             thumbnailUrl: 'https://pomf2.lain.la/f/9fv3t58i.jpg',
             mediaType: 1,
-            renderLargerThumbnail: true
+            renderLargerThumbnail: false
           },
           isForwarded: true
         },

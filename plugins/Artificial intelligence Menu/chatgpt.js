@@ -30,7 +30,7 @@ export default {
             title: 'ChatGPT',
             thumbnailUrl: 'https://pomf2.lain.la/f/f4uea2ij.jpeg',
             mediaType: 1,
-            renderLargerThumbnail: true
+            renderLargerThumbnail: false
           },
           isForwarded: true
         },

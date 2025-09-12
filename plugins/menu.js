@@ -64,7 +64,7 @@ export default {
           contextInfo: {
             externalAdReply: {
               showAdAttribution: false,
-              title: "© Cristave 2025",
+              title: global.wm,
               thumbnailUrl: global.thumb,
               mediaType: 1,
               renderLargerThumbnail: true

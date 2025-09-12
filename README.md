@@ -28,7 +28,7 @@ Dirancang untuk hiburan, manajemen grup, utilitas, dan fitur interaktif lainnya.
 - Ringan & cepat
 - Hot reload plugin tanpa restart
 - Role-based command system (Owner/Admin/Premium)
-- Sistem koin & leaderboard opsional
+- Sistem koin & exp
 
 <hr>
 
@@ -39,7 +39,7 @@ Dirancang untuk hiburan, manajemen grup, utilitas, dan fitur interaktif lainnya.
 - 👥 Manajemen grup: add/remove member, admin commands
 - 💎 Economy: koin, leaderboard, reward
 - ⚡ Hot reload plugin system
-
+- 💻 Lebih dari 150 fitur
 <hr>
 
 ## Instalasi
@@ -47,7 +47,7 @@ Dirancang untuk hiburan, manajemen grup, utilitas, dan fitur interaktif lainnya.
 **Prasyarat:** Node.js v20+, Git
 
 ```bash
-git clone https://github.com/Cristavee/Shiro.git
+git clone https://github.com/Cristavee/Shiro
 cd Shiro
 npm install
 ```
@@ -80,6 +80,7 @@ Semua kontribusi & ide selalu diterima.
 <hr>Kontak
 
 GitHub: Cristavee
+
 Email: cristaveoffc@gmail.com
 
 <hr><p align="center">© Cristavee 2025</p>

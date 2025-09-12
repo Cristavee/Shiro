@@ -33,7 +33,7 @@ export default {
             title: 'Perplexity',
             thumbnailUrl: 'https://pomf2.lain.la/f/bmb8jibr.jpg',
             mediaType: 1,
-            renderLargerThumbnail: true
+            renderLargerThumbnail: false
           },
           isForwarded: true
         },

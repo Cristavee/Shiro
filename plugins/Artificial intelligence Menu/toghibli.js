@@ -1,9 +1,24 @@
+/*
+* Author : ZenzzXD
+*/
+
 import axios from 'axios'
 import FormData from 'form-data'
 
-const OPENAI_KEY = 'YOUR_APIKEY'
+async function scrapeApiKey() {
+  const targetUrl = 'https://overchat.ai/image/ghibli'
+  const { data: htmlContent } = await axios.get(targetUrl, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129 Safari/537.36'
+    }
+  })
+  const apiKeyRegex = /const apiKey = '([^']+)'/
+  const match = htmlContent.match(apiKeyRegex)
+  if (!match) throw new Error('ApiKey tidak ditemukan')
+  return match[1]
+}
 
-async function editImage(buffer, prompt) {
+async function editImage(buffer, prompt, apiKey) {
   const apiUrl = 'https://api.openai.com/v1/images/edits'
   const form = new FormData()
   form.append('image', buffer, { filename: 'image.png' })
@@ -16,7 +31,7 @@ async function editImage(buffer, prompt) {
   const response = await axios.post(apiUrl, form, {
     headers: {
       ...form.getHeaders(),
-      Authorization: `Bearer ${OPENAI_KEY}`
+      Authorization: `Bearer ${apiKey}`
     }
   })
 
@@ -26,34 +41,48 @@ async function editImage(buffer, prompt) {
 }
 
 export default {
-  command: ['imagedit', 'toghibli', 'ghibli'],
+  command: ['ghibli', 'toghibli', 'gb', 'imagedit'],
   tag: 'ai',
-  description: 'Edit gambar dengan prompt atau ubah ke style Studio Ghibli',
+  public: true,
+  owner: false,
+  admin: false,
+  botAdmin: false,
+  coin: 15,
+  cooldown: 10000,
 
   async run(criv, { m, text, command }) {
-    if (OPENAI_KEY == 'YOUR_APIKEY') return m.reply("You didn't set the Apikey yet, get one in https://aistudio.google.com/app/u/5/apikey")
-    if (!m.quoted || !/image/.test(m.quoted.mimetype)) {
-      if (command === 'imagedit') return m.reply(`❌ Reply gambar dengan perintah: .imagedit <prompt>`)
-      if (command === 'toghibli') return m.reply(`❌ Reply gambar dengan perintah: .toghibli`)
-    }
-
     try {
-      const buffer = await m.quoted.download()
-      let prompt
+      const quoted = m.quoted?.isMedia ? m.quoted : (m.isMedia ? m : null)
+      if (!quoted || !quoted.isMedia || !quoted.isImage) {
+        if (command === 'imagedit') return m.reply(`❌ Reply gambar dengan command .imagedit <prompt>`)
+        if (command === 'toghibli') return m.reply(`❌ Reply gambar dengan command .toghibli`)
+      }
 
-      if (command === 'toghibli' || 'ghibli') {
-        prompt = 'Convert this image into Studio Ghibli art style'
+      const buffer = await quoted.download()
+      if (!buffer) return m.reply('❌ Gagal mengunduh gambar.')
+
+      let prompt
+      if (command === 'toghibli' || command === 'ghibli' || command === 'gb') {
+        prompt = 'Please convert this image into Studio Ghibli art style'
       } else if (command === 'imagedit') {
         if (!text) return m.reply(`❌ Contoh: .imagedit ubah jadi kartun lucu`)
         prompt = text
       }
 
-      const result = await editImage(buffer, prompt)
-      await criv.sendFile(m.chat, result, 'edit.png', `✅ Selesai: ${prompt}`, m, false, { mimetype: 'image/png' })
+      const apiKey = await scrapeApiKey()
+      const result = await editImage(buffer, prompt, apiKey)
+
+      await criv.sendFile(m.chat, result, 'gb_shiro.png', 'Success !', m, false, { mimetype: 'image/png' })
 
     } catch (err) {
-      console.error('Image Edit Error:', err)
+      console.error(err)
       m.reply(`❌ Terjadi kesalahan: ${err.message}`)
+    }
+  }
+}      m.reply(`❌ Terjadi kesalahan: ${err.message}`)
+    }
+  }
+}      m.reply(`❌ Terjadi kesalahan: ${err.message}`)
     }
   }
 }

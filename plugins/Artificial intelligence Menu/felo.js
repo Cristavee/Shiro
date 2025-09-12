@@ -28,7 +28,7 @@ export default {
             title: 'Felo',
             thumbnailUrl: 'https://pomf2.lain.la/f/6m59zb9h.webp',
             mediaType: 1,
-            renderLargerThumbnail: true
+            renderLargerThumbnail: false
           },
           isForwarded: true
         },

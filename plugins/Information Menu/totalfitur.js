@@ -15,14 +15,14 @@ export default {
       await criv.sendMessage(
         m.chat,
         {
-          text: `*Total Fitur*\n> ${global.totalFeature}`,
+          text: `*Total Fitur*\n${global.totalFeature}`,
           contextInfo: {
             externalAdReply: {
               showAdAttribution: false,
               title: "Fitur",
-              body: "© Cristave 2025",
+              body: global.wm,
               thumbnailUrl: global.thumb,
-              sourceUrl: "https://github.com/Cristavee",
+              sourceUrl: global.thumb,
               mediaType: 1,
               renderLargerThumbnail: false
             },

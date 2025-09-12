@@ -1,61 +1,43 @@
 import axios from 'axios'
 
 export default {
-  command: ['ai'],
+  command: ['ai', 'chatgpt', 'gpt'],
   tag: 'ai',
   public: true,
 
   async run(criv, { m, text }) {
-    if (!text) text = 'hai'
+    if (!text) text = 'hi'
 
     try {
-      const { data } = await axios.get('https://apidl.asepharyana.tech/api/ai/v2/chatgpt', {
+      const res = await axios.get('https://apidl.asepharyana.tech/api/ai/chatgpt', {
         params: {
-          text,
-          prompt: `You can speak ${criv.lang} and use emojis if necessary, when asked your name is Shiro and when asked who your creator is you answer Cristave`,
-          imageUrl: '',
-          session: ''
+          prompt: `You are a smart assistant who speaks ${criv.lang}, kind, genius, and charismatic. When asked your name, respond ${global.bot.name}. When asked your creator, respond ${global.bot.ownerName}.`,
+          text
         }
       })
 
-      const res = data?.result
-      if (!res) {
-        return criv.sendMessage(m.chat, {
-          text: 'Gagal mendapatkan respon AI.'
-        }, { quoted: m })
+      if (!res.data?.success || !res.data?.result) {
+        return criv.sendMessage(m.chat, { text: 'Gagal mendapatkan respon dari AI.' }, { quoted: m })
       }
 
       await criv.sendMessage(m.chat, {
-        text: res,
+        text: res.data.result,
         contextInfo: {
           externalAdReply: {
             showAdAttribution: false,
-            title: 'Shiro',
+            title: global.bot.name,
             thumbnailUrl: global.thumb,
             mediaType: 1,
-            renderLargerThumbnail: true
+            renderLargerThumbnail: false
           },
           isForwarded: true
         },
         footer: global.footer
-      }, { 
-        quoted: {
-          key: {
-            remoteJid: '0@s.whatsapp.net',
-            fromMe: false,
-            id: 'BAE5F1E87A7CABA5F74A3213DE6B1C9B'
-          },
-          message: {
-            conversation: 'Hai ' + (m.pushName || 'Kak')
-          }
-        }
-      })
+      }, { quoted: m })
 
     } catch (err) {
       console.error('AI Error:', err?.response?.data || err.message)
-      criv.sendMessage(m.chat, {
-        text: 'Terjadi kesalahan saat mengambil respon AI.'
-      }, { quoted: m })
+      criv.sendMessage(m.chat, { text: 'Terjadi kesalahan saat mengambil respon AI.' }, { quoted: m })
     }
   }
 }

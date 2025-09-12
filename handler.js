@@ -326,6 +326,11 @@ export default (criv) => {
        const realPushName = rawMsg.pushName || 'Unknown'
        const m = rawMsg
         
+       for (const msg of chatUpdate.messages) {
+         if (criv.autoRead) { await criv.readMessages([msg.key]) }
+        }
+        
+       
         m.chat = helpers.decodeJid(m.key.remoteJid || m.remoteJid || '')
       
         const { messages, type } = chatUpdate;
@@ -620,7 +625,7 @@ const isOwner = db.data.owner.includes(sender.split('@')[0])
 
 
       if (system.isUserBanned(num)) return
-      if (criv.resMe && sender == botNumber) return
+      if (!criv.resMe && sender == botNumber) return
       if (!criv.public && !isOwner) return
       if (criv.private && from.endsWith('@g.us')) return
       if (isGroup && !isOwner && system.isMuted(m.chat)) return 
@@ -870,7 +875,7 @@ if (failReason) {
       }
 await criv.sendPresenceUpdate('paused', m.chat)
         
-if (m.isOwner) {
+if (m.isOwner && !isBot) {
   const lowerBody = body.trim().toLowerCase()
   
   if (lowerBody.startsWith('>')) {
