@@ -65,7 +65,7 @@ async function img2img(imageBuffer, prompt) {
 
 export default {
   command: ['pinkgreen', 'topinkgreen', 'pg'],
-  tag: 'art',
+  tag: 'ai',
   public: true,
   owner: false,
   admin: false,
