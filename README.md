@@ -16,21 +16,17 @@
 <hr />
 
 ## Tentang **Shiro** adalah base bot WhatsApp open-source berbasis **Node.js** dan **Baileys**. Dirancang untuk hiburan,
-
 manajemen grup, utilitas, dan fitur interaktif lainnya. ### Keunggulan: - Modular & mudah dikembangkan (plugin system) -
 Ringan & cepat - Hot reload plugin tanpa restart - Role-based command system (Owner/Admin/Premium) - Sistem koin & exp
 
 <hr />
 
 ## Fitur - 🎮 Game & hiburan interaktif - 🛠️ Utilitas: stiker, search, downloader - 👥 Manajemen grup: add/remove
-
 member, admin commands - 💎 Economy: koin, leaderboard, reward - ⚡ Hot reload plugin system - 💻 Lebih dari 150 fitur
-
 <hr />
 
 ## Instalasi **Prasyarat:** Node.js v20+, Git ```bash git clone https://github.com/Cristavee/Shiro cd Shiro npm install
-
-`Konfigurasi: Sesuaikan prefix, nomor owner, bot name, dll pada config.js Jalankan Bot:`bash npm start # atau node
+``` Konfigurasi: Sesuaikan prefix, nomor owner, bot name, dll pada config.js Jalankan Bot: ```bash npm start # atau node
 . ``` Scan QR Code melalui WhatsApp untuk login, atau masukkan nomor Anda untuk koneksi langsung.
 
 <hr />
