@@ -135,9 +135,9 @@ chokidar.watch(watchFiles, {
 begin()
 
 process.on('uncaughtException', (err) => {
-  console.error(chalk.red('❌ Pengecualian Tak Terduga (Uncaught Exception):'), err)
+  console.error(chalk.red('❌ Pengecualian Tak Terduga (Uncaught Exception):'))
 })
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error(chalk.red('❌ Penolakan Tak Terkelola (Unhandled Rejection):'), reason)
+  console.error(chalk.red('❌ Penolakan Tak Terkelola (Unhandled Rejection):'))
 })
