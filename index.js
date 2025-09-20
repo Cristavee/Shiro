@@ -5,12 +5,11 @@ import readline from 'readline'
 import { Boom } from '@hapi/boom'
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath, pathToFileURL } from 'url'
+import { fileURLToPath } from 'url'
 import { extendHelper } from './lib/helpers.js'
 import './config.js'
-import handleMessageEvents from './handler.js'
+import handleMessageEvents, { loadAllPlugins } from './handler.js';
 import { EventEmitter } from 'events'
-import system from './lib/system.js'
 import chokidar from 'chokidar'
 import qrcode from 'qrcode-terminal'
 import db from './lib/db.js'
@@ -19,14 +18,20 @@ const { makeWASocket, DisconnectReason, useMultiFileAuthState, makeInMemoryStore
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: true })
-const question = (text) => new Promise(resolve => {
-  process.stdout.write(chalk.blueBright(text) + ' ')
-  rl.question('', answer => resolve(answer))
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: true
 })
 
-// ===== Main function =====
+const question = (text) => new Promise(resolve => {
+  rl.question(chalk.blueBright(text) + ' ', answer => resolve(answer))
+})
+
+// ===== Fungsi Utama: Memulai Bot =====
 async function begin() {
+  console.clear()
+
   const { state, saveCreds } = await useMultiFileAuthState('./session')
   EventEmitter.defaultMaxListeners = 500
   const store = makeInMemoryStore({ logger: pino().silent() })
@@ -39,51 +44,60 @@ async function begin() {
     keepAliveIntervalMs: 10000,
     getMessage: async (key) => {
       const msg = await store.loadMessage(key.remoteJid, key.id)
-      if (msg) return msg
+      return msg?.message
     }
   })
 
   store.bind(criv.ev)
 
-  // ===== Pairing code prompt =====
+  // ===== Penanganan Pairing Code =====
   if (!criv.authState.creds.registered && global.usePairingCode) {
-    const phoneNumber = await question('Enter your WhatsApp number: ')
-    const pairCode = await criv.requestPairingCode(phoneNumber, global.cuspair)
-    console.log(chalk.green(`Your Pairing Code: ${pairCode}`))
+    const phoneNumber = await question('Masukkan nomor WhatsApp Anda: ')
+    try {
+      const pairCode = await criv.requestPairingCode(phoneNumber, global.cuspair)
+      console.log(chalk.green(`Kode Pairing Anda: ${pairCode}`))
+    } catch (err) {
+      console.error(chalk.red('Gagal meminta pairing code.'), err)
+      process.exit(1)
+    }
   }
 
-  // ===== Connection update handler =====
+  // ===== Penanganan Koneksi dan Pembaruan =====
   criv.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update
 
     if (qr && !global.usePairingCode && !criv.authState.creds.registered) {
-      console.log(chalk.yellow('📌 QR Code is available! Please scan it from your WhatsApp.'))
+      console.log(chalk.yellow('📌 Kode QR tersedia! Silakan pindai dari WhatsApp Anda.'))
       qrcode.generate(qr, { small: true })
     }
 
     extendHelper(criv)
 
     if (connection === 'open') {
-      console.log(chalk.bgGray('Connected Successfully!'))
+      console.log(chalk.bgGreen.white('Terhubung Berhasil!'))
+      loadAllPlugins()
+      console.clear()
       criv.ev.on('messages.upsert', handleMessageEvents.bind(null, criv))
     } else if (connection === 'close') {
       const reason = new Boom(lastDisconnect?.error)?.output?.statusCode
 
       if (reason === DisconnectReason.badSession || reason === DisconnectReason.loggedOut) {
-        console.log(chalk.red('Invalid/Logged out session. Delete session folder and restart.'))
+        console.log(chalk.red('Sesi tidak valid/keluar. Menghapus folder sesi dan memulai ulang.'))
         fs.rmSync(path.resolve(__dirname, 'session'), { recursive: true, force: true })
         process.exit(1)
       } else if (
-        reason === DisconnectReason.restartRequired ||
-        reason === DisconnectReason.connectionClosed ||
-        reason === DisconnectReason.connectionLost
+        [
+          DisconnectReason.restartRequired,
+          DisconnectReason.connectionClosed,
+          DisconnectReason.connectionLost
+        ].includes(reason)
       ) {
-        console.log(chalk.yellow('Connection lost. Retrying...'))
+        console.log(chalk.yellow('Koneksi terputus. Mencoba terhubung kembali...'))
         begin()
       } else if (reason === DisconnectReason.connectionReplaced) {
-        console.log(chalk.yellow('Connection replaced by a new session. Bot keeps running.'))
+        console.log(chalk.yellow('Koneksi digantikan oleh sesi baru. Bot terus berjalan.'))
       } else {
-        console.log(chalk.yellow(`Connection disconnected (${reason}). Retrying...`))
+        console.log(chalk.yellow(`Koneksi terputus (${reason}). Mencoba terhubung kembali...`))
         begin()
       }
     }
@@ -93,7 +107,7 @@ async function begin() {
   return criv
 }
 
-// ===== Auto Reload Crucial Files =====
+// ===== Reload Otomatis untuk File-file Penting =====
 const watchFiles = [
   path.resolve(__dirname, 'lib'),
   path.resolve(__dirname, 'handler.js'),
@@ -105,29 +119,25 @@ chokidar.watch(watchFiles, {
   persistent: true,
   ignoreInitial: true
 }).on('change', async (filePath) => {
-  console.log(chalk.magenta(`🔄 File changed: ${filePath}`))
-  try {
-    const fileUrl = pathToFileURL(filePath).href
-    const module = await import(`${fileUrl}?update=${Date.now()}`)
+  console.log(chalk.magenta(`🔄 Perubahan terdeteksi: ${path.basename(filePath)}`))
+    const module = await import(`${filePath}?update=${Date.now()}`)
     if (filePath.endsWith('handler.js')) {
       handleMessageEvents = module.default
-      console.log(chalk.green('✅ handler.js reloaded'))
+      console.log(chalk.green('✅ handler.js dimuat ulang.'))
     } else if (filePath.endsWith('config.js')) {
-      console.log(chalk.green('✅ config.js reloaded'))
+      console.log(chalk.green('✅ config.js dimuat ulang.'))
     } else if (filePath.includes('lib')) {
-      console.log(chalk.green(`✅ Library updated: ${path.basename(filePath)}`))
+      console.log(chalk.green(`✅ Pustaka diperbarui: ${path.basename(filePath)}`))
     }
-  } catch (err) {
-    console.error(chalk.red(`❌ Failed to reload ${filePath}:`), err)
   }
-})
+)
 
 begin()
 
 process.on('uncaughtException', (err) => {
-  console.error('❌ Uncaught Exception:', err)
+  console.error(chalk.red('❌ Pengecualian Tak Terduga (Uncaught Exception):'), err)
 })
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Unhandled Rejection:', reason)
+  console.error(chalk.red('❌ Penolakan Tak Terkelola (Unhandled Rejection):'), reason)
 })

@@ -79,157 +79,6 @@ function logErrorToFile(error) {
 	console.error(chalk.red(`Error logged to ${ERROR_LOG_FILE}`));
 }
 
-function updateLastActivity(senderId) {
-	lastActivity.set(senderId, Date.now())
-}
-
-function isSpamming(senderId, command) {
-	const key = `${senderId}:${command}`
-	const now = Date.now()
-	const spamData = spamMap.get(key) || {
-		count: 0,
-		lastTime: 0
-	}
-
-	if (now - spamData.lastTime < SPAM_INTERVAL) {
-		spamData.count++
-	} else {
-		spamData.count = 1
-	}
-	spamData.lastTime = now
-	spamMap.set(key, spamData)
-
-	return spamData.count >= SPAM_THRESHOLD
-}
-
-if (!global.plugins) {
-	global.plugins = {};
-}
-
-async function loadPlugin(filePath) {
-	try {
-		const pluginModule = await import(pathToFileURL(filePath).href + `?update=${Date.now()}`);
-		const plugin = pluginModule.default;
-
-		if (plugin && plugin.command && Array.isArray(plugin.command)) {
-			for (const cmd of plugin.command) {
-				global.plugins[cmd.toLowerCase()] = plugin;
-				global.plugins[cmd.toLowerCase()].filePath = filePath;
-			}
-			if (typeof plugin.onMessage === 'function') {
-				gamePlugins[plugin.command[0].toLowerCase()] = plugin;
-			}
-			console.log(chalk.hex('#B2F2BB')(`Plugin: ${path.basename(filePath)}  - `) + chalk.gray(`command: [ ${plugin.command.join(' - ')} ]`));
-			return true
-		} else {
-			console.warn(`! Plugin '${path.basename(filePath)}' skipped: No 'command' property or it is not an array.`);
-			return false;
-		}
-	} catch (e) {
-		console.error(chalk.red(` Failed to load plugin '${path.basename(filePath)}':`), e);
-		logErrorToFile(e);
-		return false;
-	}
-}
-
-async function loadAllPlugins() {
-	console.log(chalk.yellow('Reloading all plugins...'));
-	global.plugins = {};
-	Object.keys(gamePlugins).forEach(key => delete gamePlugins[key]);
-
-	try {
-		const items = fs.readdirSync(pluginsDir);
-		let totalLoaded = 0;
-
-		for (const item of items) {
-			const itemPath = path.join(pluginsDir, item);
-			const stat = fs.statSync(itemPath);
-
-			if (stat.isDirectory()) {
-				const pluginFiles = fs.readdirSync(itemPath).filter(file => file.endsWith('.js'));
-				for (const file of pluginFiles) {
-					const filePath = path.join(itemPath, file);
-					const loaded = await loadPlugin(filePath);
-					if (loaded) {
-						totalLoaded++;
-					}
-				}
-			} else if (stat.isFile() && item.endsWith('.js')) {
-				const loaded = await loadPlugin(itemPath);
-				if (loaded) {
-					totalLoaded++;
-				}
-			}
-		}
-		global.totalFeature = totalLoaded;
-		console.log(chalk.green(`All plugins finished loading. Total features: ${totalLoaded}`));
-	} catch (dirError) {
-		console.error(chalk.red(`Failed to read plugin directory '${pluginsDir}':`), dirError)
-		logErrorToFile(dirError)
-	}
-}
-
-loadAllPlugins()
-
-async function error(m, criv, err = global.msg.error) {
-   if (m.quoted) {
-    await criv.sendMessage(global.owner, { text: err }, { quoted: m })
-  } else {
-        await criv.sendMessage(global.owner, { text: err })
-    }
-}
-
-function checkAccess(plugin, {
-	isGroup,
-	isAdmin,
-	isBotAdmin,
-	isOwner,
-	sender,
-	system
-}) {
-	const opts = {
-		owner: !!plugin.owner,
-		group: !!plugin.group,
-		private: !!plugin.private,
-		premium: !!plugin.premium,
-		botAdmin: !!plugin.botAdmin,
-		admin: !!plugin.admin,
-		coin: plugin.coin || 0
-	}
-
-	// âœ… Check banned status
-	if (system.isUserBanned(sender)) return global.msg.banned
-
-	// âœ… Owner only
-	if (opts.owner && !isOwner) return global.msg.owner
-
-	// âœ… Group / Private
-	if (opts.group && !isGroup) return global.msg.group
-	if (opts.private && isGroup) return global.msg.private
-
-	// âœ… Premium only
-	if (opts.premium && !isOwner && !system.isPremium(sender)) return global.msg.premium
-
-	// âœ… Coin requirement 
-	if (opts.coin > 0) {
-		const userCoin = system.getCoin(sender)
-		if (userCoin < opts.coin) return global.msg.coin
-	}
-
-	// âœ… Group-only checks
-	if (isGroup) {
-		if (opts.botAdmin && !isBotAdmin) return global.msg.botAdmin
-		if (opts.admin && !isAdmin) return global.msg.admin
-	}
-
-	// âœ… Warn limit 
-	if (system.getWarn(sender) >= 3) return global.msg.warn
-
-	// âœ… All checks passed
-	return null
-}
-
-
 chokidar.watch(pluginsDir, {
 		ignored: /(^|[\/\\])\../,
 		persistent: true,
@@ -298,6 +147,29 @@ chokidar.watch(pluginsDir, {
 		}
 	});
 
+function updateLastActivity(senderId) {
+	lastActivity.set(senderId, Date.now())
+}
+
+function isSpamming(senderId, command) {
+	const key = `${senderId}:${command}`
+	const now = Date.now()
+	const spamData = spamMap.get(key) || {
+		count: 0,
+		lastTime: 0
+	}
+
+	if (now - spamData.lastTime < SPAM_INTERVAL) {
+		spamData.count++
+	} else {
+		spamData.count = 1
+	}
+	spamData.lastTime = now
+	spamMap.set(key, spamData)
+
+	return spamData.count >= SPAM_THRESHOLD
+}
+
 async function cleanupExpiredGames() {
 	if (!system.db) return
 	if (!system.db.data) system.db.data = {
@@ -350,7 +222,130 @@ async function getGroupMeta(criv, chatId) {
  return data;
 }
 
+async function error(m, criv, err = global.msg.error) {
+   if (m.quoted) {
+    await criv.sendMessage(global.owner, { text: err }, { quoted: m })
+  } else {
+        await criv.sendMessage(global.owner, { text: err })
+    }
+}
+
+function checkAccess(plugin,{isGroup,isAdmin,isBotAdmin,isOwner,sender,system}) {
+	const opts = {
+		owner: !!plugin.owner,
+		group: !!plugin.group,
+		private: !!plugin.private,
+		premium: !!plugin.premium,
+		botAdmin: !!plugin.botAdmin,
+		admin: !!plugin.admin,
+		coin: plugin.coin || 0
+	}
+
+	// Check banned status
+	if (system.isUserBanned(sender)) return global.msg.banned
+
+	// Owner only
+	if (opts.owner && !isOwner) return global.msg.owner
+
+	// Group / Private
+	if (opts.group && !isGroup) return global.msg.group
+	if (opts.private && isGroup) return global.msg.private
+
+	// Premium only
+	if (opts.premium && !isOwner && !system.isPremium(sender)) return global.msg.premium
+
+	// Coin requirement 
+	if (opts.coin > 0) {
+		const userCoin = system.getCoin(sender)
+		if (userCoin < opts.coin) return global.msg.coin
+	}
+
+	// Group-only checks
+	if (isGroup) {
+		if (opts.botAdmin && !isBotAdmin) return global.msg.botAdmin
+		if (opts.admin && !isAdmin) return global.msg.admin
+	}
+
+	// Warn limit 
+	if (system.getWarn(sender) >= 3) return global.msg.warn
+
+	// All checks passed
+	return null
+}
+
+
+
+if (!global.plugins) {
+	global.plugins = {};
+}
+
+async function loadPlugin(filePath) {
+	try {
+		const pluginModule = await import(pathToFileURL(filePath).href + `?update=${Date.now()}`);
+		const plugin = pluginModule.default;
+
+		if (plugin && plugin.command && Array.isArray(plugin.command)) {
+			for (const cmd of plugin.command) {
+				global.plugins[cmd.toLowerCase()] = plugin;
+				global.plugins[cmd.toLowerCase()].filePath = filePath;
+			}
+			if (typeof plugin.onMessage === 'function') {
+				gamePlugins[plugin.command[0].toLowerCase()] = plugin;
+			}
+			console.log(chalk.hex('#B2F2BB')(`Plugin: ${path.basename(filePath)}  - `) + chalk.gray(`command: [ ${plugin.command.join(' - ')} ]`));
+			return true
+		} else {
+			console.warn(`! Plugin '${path.basename(filePath)}' skipped: No 'command' property or it is not an array.`);
+			return false;
+		}
+	} catch (e) {
+		console.error(chalk.red(` Failed to load plugin '${path.basename(filePath)}':`), e);
+		logErrorToFile(e);
+		return false;
+	}
+}
+
+export async function loadAllPlugins() {
+	console.log(chalk.yellow('Reloading all plugins...'));
+	global.plugins = {};
+	Object.keys(gamePlugins).forEach(key => delete gamePlugins[key]);
+
+	try {
+		const items = fs.readdirSync(pluginsDir);
+		let totalLoaded = 0;
+
+		for (const item of items) {
+			const itemPath = path.join(pluginsDir, item);
+			const stat = fs.statSync(itemPath);
+
+			if (stat.isDirectory()) {
+				const pluginFiles = fs.readdirSync(itemPath).filter(file => file.endsWith('.js'));
+				for (const file of pluginFiles) {
+					const filePath = path.join(itemPath, file);
+					const loaded = await loadPlugin(filePath);
+					if (loaded) {
+						totalLoaded++;
+					}
+				}
+			} else if (stat.isFile() && item.endsWith('.js')) {
+				const loaded = await loadPlugin(itemPath);
+				if (loaded) {
+					totalLoaded++;
+				}
+			}
+		}
+		global.totalFeature = totalLoaded;
+		console.log(chalk.green(`All plugins finished loading. Total features: ${totalLoaded}`));
+	} catch (dirError) {
+		console.error(chalk.red(`Failed to read plugin directory '${pluginsDir}':`), dirError)
+		logErrorToFile(dirError)
+	}
+}
+
+
 export default (criv) => {
+  console.clear()  
+    
    criv.decodeJid = helpers.decodeJid
    criv.plugins = global.plugins
     
@@ -1200,10 +1195,9 @@ for (const [key, getter] of Object.entries(prop)) {
 			}
 
 			if (criv.autoAi && !isBot) {
-				console.log(body)
 				const res = await axios.get('https://apidl.asepharyana.tech/api/ai/chatgpt', {
 					params: {
-						prompt: `you are a smart and speak ${criv.lang} assistant who is kind and genius and charismatic`,
+						prompt: `you are a smart and speak ${criv.lang} assistant, your name is ${bot.name}, and your Creator is ${bot.ownerName} who is kind and genius and charismatic`,
 						text: body
 					}
 				})
@@ -1239,6 +1233,4 @@ for (const [key, getter] of Object.entries(prop)) {
 	})
 }
 const m = global.m
-export {
-	m
-}
+export { m }
