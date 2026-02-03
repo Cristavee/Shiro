@@ -14,55 +14,71 @@ export default {
 
   async run(criv, { m, text, msg }) {
     if (!text) return m.reply(global.msg.query)
+
     try {
       const api = `https://api.vreden.my.id/api/v1/download/play/audio?query=${encodeURIComponent(text)}`
-      const res = await axios.get(api)
-      const result = res?.data?.result
+      const res = await axios.get(api, { timeout: 15000 })
 
-      if (!result?.status || !result?.download?.url) {
+      const result = res?.data?.result
+      if (!result?.status || !result?.metadata) {
         return criv.reply(m, msg.error)
       }
 
-      const { title, url: video, thumbnail, duration, views, author } = result.metadata
-      const { url: link, filename } = result.download
-      const fileName = filename || `${title}.mp3`
+      const meta = result.metadata
+      const dl = result.download
 
-      const cap = `
-> Judul   : ${title}
-> Durasi  : ${duration?.timestamp || '-'}
-> Views   : ${views?.toLocaleString() || '-'} kali
-> Channel : ${author?.name || '-'}
-> Link    : ${video}
-> Format  : MP3 128kbps
+      const caption = `
+> Judul   : ${meta.title}
+> Durasi : ${meta.duration?.timestamp || '-'}
+> Views  : ${meta.views?.toLocaleString() || '-'} kali
+> Channel: ${meta.author?.name || '-'}
+> Link   : ${meta.url}
 
-> Mengirim audio, tunggu sebentar...
+> Memproses audio...
       `.trim()
 
-      await criv.sendImage(m.chat, thumbnail, cap)
+      await criv.sendImage(
+        m.chat,
+        meta.thumbnail || meta.image,
+        caption,
+        m
+      )
 
-      const dl = await axios.get(link, {
+      if (!dl?.status || !dl?.url) {
+        return criv.reply(
+          m,
+          ` Audio gagal diproses oleh server.\n\nAlasan: ${dl?.message || 'Unknown error'}`
+        )
+      }
+
+ 
+      const audioRes = await axios.get(dl.url, {
         responseType: 'arraybuffer',
-        headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': '*/*' },
         timeout: 20000,
-        validateStatus: () => true
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+          'Accept': '*/*'
+        }
       })
 
-      const buffer = Buffer.from(dl.data)
+      const buffer = Buffer.from(audioRes.data)
+      const fileName = dl.filename || `${meta.title}.mp3`
+
       await criv.sendMessage(
         m.chat,
         {
           audio: buffer,
           mimetype: 'audio/mpeg',
-          ptt: false,
           fileName
         },
         { quoted: m }
       )
-    } catch (e) {
-      console.error(e)
+
+      await criv.sendReaction(m.chat, m.key, '🎶')
+
+    } catch (err) {
+      console.error('[PLAY ERROR]', err?.message || err)
       criv.reply(m, msg.error)
     }
-
-    await criv.sendReaction(m.chat, m.key, '')
   }
 }
