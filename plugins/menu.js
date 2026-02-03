@@ -14,42 +14,41 @@ export default {
   
   async run(criv, { m, args, pushName, readMore }) {
     const plugins = criv.plugins || {}
-    const categorized = {}
+    const cat = {}
 
-    // Mengelompokkan perintah berdasarkan tag
     for (const plug of Object.values(plugins)) {
       if (!plug.tag) continue
 
       const tag = plug.tag.toUpperCase()
-      if (!categorized[tag]) categorized[tag] = []
+      if (!cat[tag]) cat[tag] = []
 
-      let commandToDisplay = Array.isArray(plug.command) ? plug.command[0] : plug.command
-      if (!commandToDisplay) continue
+      let cmds = Array.isArray(plug.command) ? plug.command[0] : plug.command
+      if (!cmds) continue
 
-      if (plug.owner) commandToDisplay += ' ⓞ'
-      else if (plug.premium) commandToDisplay += ' ℗'
-      else if (plug.coin) commandToDisplay += ' ©'
-      else commandToDisplay += ' ⓕ'
+      if (plug.owner) cmds += ' ⓞ'
+      else if (plug.premium) cmds += ' ℗'
+      else if (plug.coin) cmds += ' ©'
+      else cmds += ' ⓕ'
 
-      if (!categorized[tag].includes(commandToDisplay)) {
-        categorized[tag].push(commandToDisplay)
+      if (!cat[tag].includes()) {
+        cat[tag].push(cmds)
       }
     }
 
     // Filter berdasarkan tag jika ada
     const filterTag = args[0]?.toUpperCase()
-    const tagsToShow = filterTag && categorized[filterTag] 
-      ? { [filterTag]: categorized[filterTag] } 
-      : categorized
+    const tgs = filterTag && cat[filterTag] 
+      ? { [filterTag]: cat[filterTag] } 
+      : cat
 
-    if (filterTag && !categorized[filterTag]) {
-      const available = Object.keys(categorized).map(t => `- ${t}`).join('\n')
+    if (filterTag && !cat[filterTag]) {
+      const available = Object.keys(cat).map(t => `- ${t}`).join('\n')
       return m.reply(`[ ! ] Kategori *${filterTag}* tidak ditemukan.\n\nKategori yang tersedia:\n${available}`)
     }
 
     // Membuat teks menu
     let menu = ` ${global.getGreet(pushName)}\n${readMore}`
-    for (const [tag, cmds] of Object.entries(tagsToShow)) {
+    for (const [tag, cmds] of Object.entries(tgs)) {
       menu += `\n*⌘ ${tag} MENU:*\n`
       for (const cmd of cmds) {
         menu += ` ﹄ ${global.prefix[0]}${cmd}\n`
