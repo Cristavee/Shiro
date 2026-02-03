@@ -3,36 +3,35 @@ import fs from 'fs'
 import moment from 'moment-timezone'
 
 // ─── Bot Settings ─────────────────────────────────
-global.usePairingCode = true // true = pairing code, false = QR
-global.cuspair = 'AAAAAAAA' // CUSTOM PAIRING CODE (MUST BE 8 DIGITS)
+global.usePairingCode = true
+global.cuspair = 'AAAAAAAA' // MUST BE 8 DIGITS
 global.bot = {
-  name: '', // UR BOT NAME
-  owner: '', // UR NUMBER
-  ownerName: '', // UR NAME
-  full: '' // UR BOT FULL NAME / SEC NAME
+  name: '',
+  owner: '',
+  ownerName: '',
+  full: ''
 }
-global.thumb = 'https://pomf2.lain.la/f/10xr5ka8.png' // THUMBNAIL URL
-global.wm = `© ${bot.ownerName} 2025`
+global.thumb = 'https://pomf2.lain.la/f/10xr5ka8.png'
+global.wm = `© ${global.bot.ownerName} 2025`
 
-// ─── Sticker ──────────────────────────────────
-
+// ─── Sticker ──────────────────────────────────────
 global.pack = 'Shiro Sticker'
 global.author = 'WhatsApp Bot'
 
-// ─── Owner List ──────────────────────────────────
+// ─── Owner List ───────────────────────────────────
 global.owner = [`${global.bot.owner}@s.whatsapp.net`]
 
 // ─── Command Prefix ───────────────────────────────
 global.prefix = ['.', '!', '/', ',']
 
-// ─── Social Media ──────────────────────────────────
-global.ig = '' // fill if available
-global.wa = '' // fill if available
-global.git = '' // fill if available
-global.yt = '' // fill if available
-global.fb = '' // fill if available
+// ─── Social Media ─────────────────────────────────
+global.ig = ''
+global.wa = ''
+global.git = ''
+global.yt = ''
+global.fb = ''
 
-// ─── Default Bot Responses ────────────────────────────
+// ─── Default Bot Responses ────────────────────────
 global.msg = {
   owner: "This command can only be used by the Owner.",
   admin: "This command can only be used by Group Admins.",
@@ -49,9 +48,7 @@ global.msg = {
   main: "This feature is currently under maintenance or development by the owner"
 }
 
-// ─── API Key (For Future Project)───────────────────────
-
-// ─── Dynamic Greeting Function ─────────────────────────
+// ─── Greeting Helper ──────────────────────────────
 function getGreeting() {
   const hour = moment().tz('Asia/Jakarta').hour()
   if (hour >= 4 && hour < 11) return 'Good Morning 🌄'
@@ -60,37 +57,60 @@ function getGreeting() {
   return 'Good Night 🌌'
 }
 
-global.getGreet = (pushName = 'User', senderJid) => {
-  const greet = getGreeting()
-  const user = global.system.getUser(global.sender)
-  const uptime = process.uptime() * 1000
-  const userTag = senderJid ? `@${senderJid.split('@')[0]}` : pushName
-  const like = global.system.getLike()
+// ─── SAFE Folder Size (Windows-friendly) ─────────
+function getFolderSize(dirPath) {
+  let total = 0
+  let files = []
 
-  function getFolderSize(dirPath) {
-    let total = 0
-    const files = fs.readdirSync(dirPath)
-
-    for (const file of files) {
-      const filePath = path.join(dirPath, file)
-      const stat = fs.statSync(filePath)
-
-      if (stat.isDirectory()) {
-        total += getFolderSize(filePath)
-      } else {
-        total += stat.size
-      }
-    }
-    return total
+  try {
+    files = fs.readdirSync(dirPath)
+  } catch (err) {
+    return 0
   }
 
-  const db = path.resolve('./lib/database/data.json')
-  const stat = fs.statSync(db)
-  const ukDb = (stat.size / 1024).toFixed(2)
+  for (const file of files) {
+    const filePath = path.join(dirPath, file)
 
-  const sis = path.resolve('../')
-  const sistemSize = getFolderSize(sis)
-  const sistem = (sistemSize / (1024 * 1024)).toFixed(2)
+    const blocked = ['Application Data', 'Local Settings', 'Temp']
+    if (blocked.includes(path.basename(filePath))) continue
+
+    let stat
+    try {
+      stat = fs.statSync(filePath)
+    } catch (err) {
+      continue
+    }
+
+    if (stat.isDirectory()) {
+      total += getFolderSize(filePath)
+    } else {
+      total += stat.size
+    }
+  }
+
+  return total
+}
+
+// ─── Global Greeting Function ─────────────────────
+global.getGreet = (pushName = 'User', senderJid) => {
+  const greet = getGreeting()
+  const user = global.system?.getUser?.(global.sender) || { premium: false }
+  const uptime = process.uptime() * 1000
+  const userTag = senderJid ? `@${senderJid.split('@')[0]}` : pushName
+
+  // Database size
+  let ukDb = '0.00'
+  try {
+    const db = path.resolve('./lib/database/data.json')
+    const stat = fs.statSync(db)
+    ukDb = (stat.size / 1024).toFixed(2)
+  } catch {}
+
+  let sistem = '0.00'
+  try {
+    const sistemSize = getFolderSize(process.cwd())
+    sistem = (sistemSize / (1024 * 1024)).toFixed(2)
+  } catch {}
 
   global.ukDb = ukDb
   global.sis = sistem
@@ -118,7 +138,7 @@ global.getGreet = (pushName = 'User', senderJid) => {
 │
 ╰─〔 ${global.bot.name} 〕
 
-A multifunctional WhatsApp assistant that helps with chatting, 
+A multifunctional WhatsApp assistant that helps with chatting,
 media downloads, fun games, group management, and more! 🚀
 ${user.premium ? 'Enjoy your premium perks! 💎' : 'Upgrade to premium for more features!'}
 `
